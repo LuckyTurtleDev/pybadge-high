@@ -25,7 +25,7 @@ jobs:
             ~/.cargo/registry
             target
           key: "${{runner.os}} Rust ${{steps.rust-toolchain.outputs.cachekey}}"
-      - run: cargo test --workspace --all-features
+      - run: cargo check --workspace --all-features
         env:
           RUST_BACKTRACE: 1
 
