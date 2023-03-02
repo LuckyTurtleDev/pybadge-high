@@ -1,0 +1,40 @@
+name: Rust
+
+on:
+  push:
+  pull_request:
+  release:
+    types: [released]
+
+jobs:
+
+  test:
+    runs-on: ubuntu-latest    
+    steps:
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: thumbv7em-none-eabihf
+      - name: Install SDL2 #needed by display simulator
+        run: sudo apt-get update && sudo apt-get install -y libsdl2-dev
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/git
+            ~/.cargo/registry
+            target
+          key: "${{runner.os}} Rust ${{steps.rust-toolchain.outputs.cachekey}}"
+      - run: cargo test --workspace --all-features
+        env:
+          RUST_BACKTRACE: 1
+
+  rustfmt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@nightly
+        with:
+          targets: thumbv7em-none-eabihf
+          components: rustfmt
+      - run: cargo fmt --all -- --check
