@@ -7,5 +7,5 @@ edition = "2021"
 [dependencies]
 cortex-m = "0.7.7"
 embedded-graphics = "0.7.1"
-pygamer = { version = "0.9.0", features = ["panic_led"] }
+edgebadge = { version = "0.9.0"}
 st7735-lcd = { version = "0.8.1", default-features = false }

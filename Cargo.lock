@@ -133,6 +133,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "edgebadge"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "37fdeac13f9befd3e7cea892744cbc0e33c93fdd62a25e4c767afd9eca794555"
+dependencies = [
+ "atsamd-hal",
+ "cortex-m",
+ "cortex-m-rt",
+ "st7735-lcd",
+ "ws2812-timer-delay",
+]
+
+[[package]]
 name = "embedded-graphics"
 version = "0.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -245,8 +258,8 @@ name = "pybadge-high"
 version = "0.1.0"
 dependencies = [
  "cortex-m",
+ "edgebadge",
  "embedded-graphics",
- "pygamer",
  "st7735-lcd",
 ]
 
@@ -257,19 +270,6 @@ dependencies = [
  "cortex-m-rt",
  "embedded-graphics",
  "pybadge-high",
-]
-
-[[package]]
-name = "pygamer"
-version = "0.9.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e3c482a07f25bebcf808b28ec0f54058becf902c77b7ad13e4b313186e177090"
-dependencies = [
- "atsamd-hal",
- "cortex-m",
- "cortex-m-rt",
- "st7735-lcd",
- "ws2812-timer-delay",
 ]
 
 [[package]]

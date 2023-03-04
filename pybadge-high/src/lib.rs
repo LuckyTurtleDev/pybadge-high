@@ -4,9 +4,7 @@
 //! rustup target install thumbv7em-none-eabihf
 //! ```
 
-use hal::{clock::GenericClockController, pwm::Pwm2, sercom::SPIMaster4};
-use pac::{CorePeripherals, Peripherals};
-use pygamer::{
+use edgebadge::{
 	clock::ClockId,
 	entry, gpio,
 	gpio::{v2::PA23, *},
@@ -14,13 +12,15 @@ use pygamer::{
 	prelude::*,
 	Pins
 };
+use hal::{clock::GenericClockController, pwm::Pwm2, sercom::SPIMaster4};
+use pac::{CorePeripherals, Peripherals};
 use st7735_lcd::ST7735;
 
 mod buttons;
 use buttons::Buttons;
 
 pub mod prelude {
-	pub use pygamer::prelude::_embedded_hal_blocking_delay_DelayMs;
+	pub use edgebadge::prelude::_embedded_hal_blocking_delay_DelayMs;
 }
 
 pub type Color = embedded_graphics::pixelcolor::Rgb565;
@@ -34,7 +34,7 @@ pub type Display = ST7735<
 	Pb5<Output<PushPull>>,
 	Pa0<Output<PushPull>>
 >;
-pub type Delay = pygamer::delay::Delay;
+pub type Delay = edgebadge::delay::Delay;
 
 pub struct Led {
 	pin: Pin<PA23, Output<PushPull>>
@@ -112,5 +112,32 @@ impl PyBadge {
 			red_led,
 			delay
 		})
+	}
+}
+
+#[inline(never)]
+#[panic_handler]
+fn panic(_info: &core::panic::PanicInfo) -> ! {
+	//simple turn red led on
+	let mut peripherals = unsafe { crate::pac::Peripherals::steal() };
+	let mut pins = Pins::new(peripherals.PORT);
+	let mut led = pins.d13.into_push_pull_output(&mut pins.port);
+	led.set_high().ok();
+
+	//enable blinking for led
+	let core = unsafe { CorePeripherals::steal() };
+	let mut clocks = GenericClockController::with_internal_32kosc(
+		peripherals.GCLK,
+		&mut peripherals.MCLK,
+		&mut peripherals.OSC32KCTRL,
+		&mut peripherals.OSCCTRL,
+		&mut peripherals.NVMCTRL
+	);
+	let mut delay = hal::delay::Delay::new(core.SYST, &mut clocks);
+	loop {
+		led.set_high().ok();
+		delay.delay_ms(200_u8);
+		led.set_low().ok();
+		delay.delay_ms(200_u8);
 	}
 }
