@@ -1,0 +1,11 @@
+[package]
+name = "buttons-example"
+workspace = "../.."
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+cortex-m-rt = "0.7.3"
+embedded-graphics = "0.7.1"
+pybadge-high = { version = "0.1.0", path = "../../pybadge-high" }

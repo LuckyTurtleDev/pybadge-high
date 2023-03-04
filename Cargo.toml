@@ -1,2 +1,2 @@
 [workspace]
-members = ["pybadge-high", "examples/flashing-display/"]
+members = ["pybadge-high", "examples/flashing-display/", "examples/buttons/"]

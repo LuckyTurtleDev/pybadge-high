@@ -1,6 +1,10 @@
 #![no_std]
 
-use pygamer::{clock::ClockId, entry, hal, pac, Pins};
+//! ```bash
+//! rustup target install thumbv7em-none-eabihf
+//! ```
+
+use pygamer::{clock::ClockId, entry, hal, pac, pins, Pins};
 
 use hal::{clock::GenericClockController, pwm::Pwm2, sercom::SPIMaster4};
 use pac::{CorePeripherals, Peripherals};
@@ -19,9 +23,13 @@ pub type Display = ST7735<
 	Pa0<Output<PushPull>>
 >;
 
+mod buttons;
+use buttons::Buttons;
+
 pub struct PyBadge {
 	pub backlight: Backlight,
-	pub display: Display
+	pub display: Display,
+	pub buttons: Buttons,
 }
 
 impl PyBadge {
@@ -38,6 +46,7 @@ impl PyBadge {
 		let mut pins = Pins::new(peripherals.PORT).split();
 		let mut delay = hal::delay::Delay::new(core.SYST, &mut clocks);
 
+		//display
 		let (mut display, backlight) = pins
 			.display
 			.init(
@@ -49,6 +58,20 @@ impl PyBadge {
 				&mut pins.port
 			)
 			.unwrap();
-		Some(PyBadge { backlight, display })
+
+		//buttons
+		let buttons = {
+			let latch = pins.buttons.latch.into_push_pull_output(&mut pins.port);
+			let data_in = pins.buttons.data_in.into_floating_input(&mut pins.port);
+			let clock = pins.buttons.clock.into_push_pull_output(&mut pins.port);
+			Buttons {
+				current_state: 0,
+				laste_state: 0,
+				latch,
+				data_in,
+				clock
+			}
+		};
+		Some(PyBadge { backlight, display, buttons })
 	}
 }
