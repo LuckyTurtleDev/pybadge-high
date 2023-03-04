@@ -9,13 +9,12 @@ use hal::{
 
 const B: u8 = 1 << 7;
 const A: u8 = 1 << 6;
-const START: u8 = 1 <<5;
+const START: u8 = 1 << 5;
 const SELECT: u8 = 1 << 4;
 const RIGHT: u8 = 1 << 3;
 const DOWN: u8 = 1 << 2;
 const UP: u8 = 1 << 1;
 const LEFT: u8 = 1;
-
 
 pub struct Buttons {
 	pub(crate) current_state: u8,
@@ -37,11 +36,11 @@ impl Buttons {
 	pub fn none_pressed(&self) -> bool {
 		self.current_state != 0
 	}
-	
+
 	pub fn a_pressed(&self) -> bool {
 		self.current_state & A != 0
 	}
-	
+
 	pub fn b_pressed(&self) -> bool {
 		self.current_state & B != 0
 	}
@@ -49,27 +48,27 @@ impl Buttons {
 	pub fn start_pressed(&self) -> bool {
 		self.current_state & START != 0
 	}
-	
+
 	pub fn select_pressed(&self) -> bool {
 		self.current_state & SELECT != 0
 	}
-		
+
 	pub fn right_pressed(&self) -> bool {
 		self.current_state & RIGHT != 0
 	}
-	
+
 	pub fn down_pressed(&self) -> bool {
 		self.current_state & DOWN != 0
 	}
-	
+
 	pub fn up_pressed(&self) -> bool {
 		self.current_state & UP != 0
 	}
-	
+
 	pub fn left_pressed(&self) -> bool {
 		self.current_state & LEFT != 0
 	}
-			
+
 	/// Returns a ButtonIter of button changes as Keys enums
 	pub fn event(&self) {}
 

@@ -29,7 +29,7 @@ use buttons::Buttons;
 pub struct PyBadge {
 	pub backlight: Backlight,
 	pub display: Display,
-	pub buttons: Buttons,
+	pub buttons: Buttons
 }
 
 impl PyBadge {
@@ -72,6 +72,10 @@ impl PyBadge {
 				clock
 			}
 		};
-		Some(PyBadge { backlight, display, buttons })
+		Some(PyBadge {
+			backlight,
+			display,
+			buttons
+		})
 	}
 }
