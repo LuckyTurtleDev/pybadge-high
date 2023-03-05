@@ -1,12 +1,11 @@
 #![no_std]
 #![no_main]
 
-use cortex_m_rt::entry;
 use embedded_graphics::{
 	prelude::*,
 	primitives::{PrimitiveStyleBuilder, Rectangle}
 };
-use pybadge::{Color, PyBadge};
+use pybadge::{prelude::*, Color, PyBadge};
 use pybadge_high as pybadge;
 
 #[entry]

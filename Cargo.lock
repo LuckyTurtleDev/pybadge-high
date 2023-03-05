@@ -230,6 +230,13 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "546c37ac5d9e56f55e73b677106873d9d9f5190605e41a856503623648488cae"
 
 [[package]]
+name = "neopixel-example"
+version = "0.1.0"
+dependencies = [
+ "pybadge-high",
+]
+
+[[package]]
 name = "num-traits"
 version = "0.2.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -258,16 +265,19 @@ name = "pybadge-high"
 version = "0.1.0"
 dependencies = [
  "cortex-m",
+ "cortex-m-rt",
  "edgebadge",
  "embedded-graphics",
+ "embedded-hal",
+ "smart-leds-trait",
  "st7735-lcd",
+ "ws2812-timer-delay",
 ]
 
 [[package]]
 name = "pybadge-show-case"
 version = "0.1.0"
 dependencies = [
- "cortex-m-rt",
  "embedded-graphics",
  "pybadge-high",
 ]

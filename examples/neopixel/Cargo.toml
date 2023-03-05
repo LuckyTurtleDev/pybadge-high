@@ -1,10 +1,9 @@
 [package]
-name = "pybadge-show-case"
+name = "neopixel-example"
 workspace = "../.."
 version = "0.1.0"
 edition = "2021"
 publish = false
 
 [dependencies]
-embedded-graphics = "0.7.1"
 pybadge-high = { version = "0.1.0", path = "../../pybadge-high" }

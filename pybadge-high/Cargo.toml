@@ -4,8 +4,16 @@ workspace = ".."
 version = "0.1.0"
 edition = "2021"
 
+[features]
+default = ["neopixel"]
+neopixel = ["dep:ws2812-timer-delay", "dep:smart-leds-trait", "dep:embedded-hal"]
+
 [dependencies]
 cortex-m = "0.7.7"
 embedded-graphics = "0.7.1"
 edgebadge = { version = "0.9.0"}
 st7735-lcd = { version = "0.8.1", default-features = false }
+ws2812-timer-delay = { version = "0.3.0", optional = true }
+smart-leds-trait = { version = "0.2.1", optional = true }
+embedded-hal = { version = "0.2.7", default-features = false, optional = true }
+cortex-m-rt = { version = "0.7.3" }

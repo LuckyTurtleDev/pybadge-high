@@ -4,25 +4,41 @@
 //! rustup target install thumbv7em-none-eabihf
 //! ```
 
+#[cfg(feature = "neopixel")]
+use edgebadge::gpio::v2::PA15;
 use edgebadge::{
 	clock::ClockId,
 	entry, gpio,
-	gpio::{v2::PA23, *},
+	gpio::{v2, v2::PA23, *},
 	hal, pac, pins,
 	prelude::*,
 	Pins
 };
+#[cfg(feature = "neopixel")]
+use embedded_hal::digital::v1_compat::OldOutputPin;
+#[cfg(feature = "neopixel")]
+use hal::timer::SpinTimer;
 use hal::{clock::GenericClockController, pwm::Pwm2, sercom::SPIMaster4};
 use pac::{CorePeripherals, Peripherals};
+#[cfg(feature = "neopixel")]
+use smart_leds_trait::SmartLedsWrite;
 use st7735_lcd::ST7735;
+#[cfg(feature = "neopixel")]
+use ws2812::Ws2812;
+#[cfg(feature = "neopixel")]
+use ws2812_timer_delay as ws2812;
 
 mod buttons;
 use buttons::Buttons;
 
 pub mod prelude {
+	pub use cortex_m_rt::entry;
 	pub use edgebadge::prelude::_embedded_hal_blocking_delay_DelayMs;
+	#[cfg(feature = "neopixel")]
+	pub use smart_leds_trait::SmartLedsWrite;
 }
 
+///Display Color type
 pub type Color = embedded_graphics::pixelcolor::Rgb565;
 pub type Backlight = Pwm2<gpio::v2::PA01>;
 pub type Display = ST7735<
@@ -35,6 +51,12 @@ pub type Display = ST7735<
 	Pa0<Output<PushPull>>
 >;
 pub type Delay = edgebadge::delay::Delay;
+#[cfg(feature = "neopixel")]
+pub type NeoPixel = Ws2812<
+	SpinTimer,
+	OldOutputPin<edgebadge::gpio::Pin<PA15, gpio::v2::Output<gpio::v2::PushPull>>>
+>;
+pub type NeoPixelColor = <NeoPixel as SmartLedsWrite>::Color;
 
 pub struct Led {
 	pin: Pin<PA23, Output<PushPull>>
@@ -55,7 +77,9 @@ pub struct PyBadge {
 	pub display: Display,
 	pub buttons: Buttons,
 	pub red_led: Led,
-	pub delay: Delay
+	pub delay: Delay,
+	#[cfg(feature = "neopixel")]
+	pub neopixel: NeoPixel
 }
 
 impl PyBadge {
@@ -105,11 +129,20 @@ impl PyBadge {
 			led
 		};
 
+		//neopixel
+		#[cfg(feature = "neopixel")]
+		let neopixel = {
+			let timer = SpinTimer::new(4);
+			pins.neopixel.init(timer, &mut pins.port)
+		};
+
 		Ok(PyBadge {
 			backlight,
 			display,
 			buttons,
 			red_led,
+			#[cfg(feature = "neopixel")]
+			neopixel,
 			delay
 		})
 	}
