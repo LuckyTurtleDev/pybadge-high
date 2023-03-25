@@ -1,4 +1,7 @@
 #![no_std]
+#![allow(clippy::tabs_in_doc_comments)]
+#![warn(unreachable_pub)]
+#![cfg_attr(all(doc, nightly), feature(doc_auto_cfg))]
 
 //! ```bash
 //! rustup target install thumbv7em-none-eabihf
