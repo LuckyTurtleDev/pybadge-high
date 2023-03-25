@@ -56,6 +56,7 @@ pub type NeoPixel = Ws2812<
 	SpinTimer,
 	OldOutputPin<edgebadge::gpio::Pin<PA15, gpio::v2::Output<gpio::v2::PushPull>>>
 >;
+#[cfg(feature = "neopixel")]
 pub type NeoPixelColor = <NeoPixel as SmartLedsWrite>::Color;
 
 pub struct Led {
