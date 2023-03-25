@@ -16,8 +16,10 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: thumbv7em-none-eabihf
-      - name: Install SDL2 #needed by display simulator
-        run: sudo apt-get update && sudo apt-get install -y libsdl2-dev
+      - name: install cargo-all-features
+        uses: baptiste0928/cargo-install@v2.0.0
+        with:
+          crate: cargo-all-features
       - uses: actions/cache@v3
         with:
           path: |
@@ -25,7 +27,7 @@ jobs:
             ~/.cargo/registry
             target
           key: "${{runner.os}} Rust ${{steps.rust-toolchain.outputs.cachekey}}"
-      - run: cargo check --workspace --all-features
+      - run: cargo check-all-features
         env:
           RUST_BACKTRACE: 1
 
@@ -38,3 +40,26 @@ jobs:
           targets: thumbv7em-none-eabihf
           components: rustfmt
       - run: cargo fmt --all -- --check
+
+  doc2readme:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/msrd0/cargo-doc2readme
+    steps:
+    - uses: actions/checkout@v3
+    - run: cargo doc2readme --check -p pybadge-high
+
+  cargo_publish:
+    if: ${{ github.event_name == 'release' }}
+    needs: [test, doc2readme]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: thumbv7em-none-eabihf
+      - uses: msrd0/cargo-publish-action@v1
+        with: 
+          packages: pybadge-high
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
