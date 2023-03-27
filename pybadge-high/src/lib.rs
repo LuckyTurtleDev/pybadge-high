@@ -9,6 +9,8 @@
 
 #[cfg(feature = "neopixel")]
 use edgebadge::gpio::v2::PA15;
+#[cfg(feature = "usb")]
+use edgebadge::usb::UsbBus;
 use edgebadge::{
 	clock::ClockId,
 	entry, gpio,
@@ -40,6 +42,13 @@ pub mod prelude {
 	#[cfg(feature = "neopixel")]
 	pub use smart_leds_trait::SmartLedsWrite;
 }
+
+#[cfg(feature = "usb")]
+mod usb;
+#[cfg(feature = "usb")]
+pub use usb::Usb;
+#[cfg(feature = "usb")]
+pub use usb::UsbError;
 
 ///Display Color type
 pub type Color = embedded_graphics::pixelcolor::Rgb565;
@@ -83,7 +92,9 @@ pub struct PyBadge {
 	pub red_led: Led,
 	pub delay: Delay,
 	#[cfg(feature = "neopixel")]
-	pub neopixel: NeoPixel
+	pub neopixel: NeoPixel,
+	#[cfg(feature = "usb")]
+	pub usb: Usb
 }
 
 impl PyBadge {
@@ -140,6 +151,13 @@ impl PyBadge {
 			pins.neopixel.init(timer, &mut pins.port)
 		};
 
+		//usb
+		#[cfg(feature = "usb")]
+		let usb = Usb::init(
+			pins.usb
+				.init(peripherals.USB, &mut clocks, &mut peripherals.MCLK)
+		);
+
 		Ok(PyBadge {
 			backlight,
 			display,
@@ -147,6 +165,8 @@ impl PyBadge {
 			red_led,
 			#[cfg(feature = "neopixel")]
 			neopixel,
+			#[cfg(feature = "usb")]
+			usb,
 			delay
 		})
 	}
