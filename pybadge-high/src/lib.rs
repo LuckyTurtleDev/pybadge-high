@@ -2,6 +2,7 @@
 #![allow(clippy::tabs_in_doc_comments)]
 #![warn(unreachable_pub)]
 #![cfg_attr(all(doc, nightly), feature(doc_auto_cfg))]
+//#![allow(deprecated)]
 
 //! ```bash
 //! rustup target install thumbv7em-none-eabihf
@@ -9,13 +10,10 @@
 
 #[cfg(feature = "neopixel")]
 use edgebadge::gpio::v2::PA15;
-#[cfg(feature = "usb")]
-use edgebadge::usb::UsbBus;
 use edgebadge::{
-	clock::ClockId,
-	entry, gpio,
-	gpio::{v2, v2::PA23, *},
-	hal, pac, pins,
+	gpio,
+	gpio::{v2::PA23, *},
+	hal, pac,
 	prelude::*,
 	Pins
 };
@@ -112,7 +110,7 @@ impl PyBadge {
 		let mut delay = hal::delay::Delay::new(core.SYST, &mut clocks);
 
 		//display
-		let (mut display, backlight) = pins.display.init(
+		let (display, backlight) = pins.display.init(
 			&mut clocks,
 			peripherals.SERCOM4,
 			&mut peripherals.MCLK,
