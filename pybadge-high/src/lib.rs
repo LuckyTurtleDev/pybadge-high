@@ -11,26 +11,34 @@
 //!
 //! # Setup
 //! #### Installation
-//! * install rustup:
-//! I recommand you to use the [package manger](https://repology.org/project/rustup/versions) of your operation system.
+//! * Install rustup.
+//! I recommand to use the [package manger](https://repology.org/project/rustup/versions) of your operation system.
 //! Alternative you can install it from https://www.rust-lang.org/tools/install
 //! * install the rust thumbv7em-none-eabihf target. (the architecture of the micronctroller)
 //! ```bash
 //! rustup target install thumbv7em-none-eabihf
 //! ```
+//! * install the [hf2-cli](https://crates.io/crates/hf2-cli) flasher
 //!
 //! #### Create your Project
-//! * create a new rust project
+//! * Create a new rust project.
 //! ```bash
 //! cargo new my-app
 //! ```
-//! * add a `.carge/config.toml` with the following content, to define target architecture and flasher
+//! * Add a `.carge/config.toml` with the following content, to define target architecture and flasher
 //! ```toml
 //! TODO
 //! ```
-//! * add this crate as dependency
+//! * Add this crate as dependency
 //! ```bash
 //! cargo add pybadge-high
+//! ```
+//!
+//! #### Flashing:
+//! To flash you program, put your device in bootloader mode by hitting the reset button twice.
+//! After this excute
+//! ```bash
+//! cargo run --release
 //! ```
 
 #[cfg(feature = "neopixel")]

@@ -8,7 +8,7 @@ Goal of this crate is to provide **high level hardware abstraction** layer for t
 
 ##### Installation
 
- - install rustup: I recommand you to use the [package manger][__link2] of your operation system. Alternative you can install it from https://www.rust-lang.org/tools/install
+ - Install rustup. I recommand to use the [package manger][__link2] of your operation system. Alternative you can install it from https://www.rust-lang.org/tools/install
  - install the rust thumbv7em-none-eabihf target. (the architecture of the micronctroller)
 
 
@@ -16,24 +16,26 @@ Goal of this crate is to provide **high level hardware abstraction** layer for t
 rustup target install thumbv7em-none-eabihf
 ```
 
+ - install the [hf2-cli][__link3] flasher
+
 
 ##### Create your Project
 
- - create a new rust project
+ - Create a new rust project.
 
 
 ```bash
 cargo new my-app
 ```
 
- - add a `.carge/config.toml` with the following content, to define target architecture and flasher
+ - Add a `.carge/config.toml` with the following content, to define target architecture and flasher
 
 
 ```toml
 TODO
 ```
 
- - add this crate as dependency
+ - Add this crate as dependency
 
 
 ```bash
@@ -41,6 +43,17 @@ cargo add pybadge-high
 ```
 
 
+##### Flashing:
+
+To flash you program, put your device in bootloader mode by hitting the reset button twice. After this excute
+
+
+```bash
+cargo run --release
+```
+
+
  [__link0]: https://crates.io/crates/edgebadge
  [__link1]: https://docs.rs/atsamd-hal/latest/atsamd_hal/
  [__link2]: https://repology.org/project/rustup/versions
+ [__link3]: https://crates.io/crates/hf2-cli
