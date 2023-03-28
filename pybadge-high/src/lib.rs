@@ -14,7 +14,7 @@
 //! * install rustup:
 //! I recommand you to use the [package manger](https://repology.org/project/rustup/versions) of your operation system.
 //! Alternative you can install it from https://www.rust-lang.org/tools/install
-//! * install the rust thumbv7em-none-eabihf (the architecture of the micronctroller)
+//! * install the rust thumbv7em-none-eabihf target. (the architecture of the micronctroller)
 //! ```bash
 //! rustup target install thumbv7em-none-eabihf
 //! ```
@@ -24,7 +24,7 @@
 //! ```bash
 //! cargo new my-app
 //! ```
-//! * add a `.carge/config.tom` with the following content, to define target architecture and flasher
+//! * add a `.carge/config.toml` with the following content, to define target architecture and flasher
 //! ```toml
 //! TODO
 //! ```

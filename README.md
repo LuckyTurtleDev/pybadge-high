@@ -9,7 +9,7 @@ Goal of this crate is to provide **high level hardware abstraction** layer for t
 ##### Installation
 
  - install rustup: I recommand you to use the [package manger][__link2] of your operation system. Alternative you can install it from https://www.rust-lang.org/tools/install
- - install the rust thumbv7em-none-eabihf (the architecture of the micronctroller)
+ - install the rust thumbv7em-none-eabihf target. (the architecture of the micronctroller)
 
 
 ```bash
@@ -26,7 +26,7 @@ rustup target install thumbv7em-none-eabihf
 cargo new my-app
 ```
 
- - add a `.carge/config.tom` with the following content, to define target architecture and flasher
+ - add a `.carge/config.toml` with the following content, to define target architecture and flasher
 
 
 ```toml
