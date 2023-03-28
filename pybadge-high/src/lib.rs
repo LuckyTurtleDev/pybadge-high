@@ -4,8 +4,33 @@
 #![cfg_attr(all(doc, nightly), feature(doc_auto_cfg))]
 //#![allow(deprecated)]
 
+//! Goal of this crate is to provide **high level hardware abstraction** layer for the pybade and the edgebadge.
+//! It should allow people with no/less knowledge of rust and embedded hardware, to program the boards mention before.
+//! If you try to do anything hardware-near or usinig additonal expensions,
+//! you should probably use the more hardware-near the [edgebadge](https://crates.io/crates/edgebadge) or [atsamd_hal](https://docs.rs/atsamd-hal/latest/atsamd_hal/) crate instead.
+//!
+//! # Setup
+//! #### Installation
+//! * install rustup:
+//! I recommand you to use the [package manger](https://repology.org/project/rustup/versions) of your operation system.
+//! Alternative you can install it from https://www.rust-lang.org/tools/install
+//! * install the rust thumbv7em-none-eabihf (the architecture of the micronctroller)
 //! ```bash
 //! rustup target install thumbv7em-none-eabihf
+//! ```
+//!
+//! #### Create your Project
+//! * create a new rust project
+//! ```bash
+//! cargo new my-app
+//! ```
+//! * add a `.carge/config.tom` with the following content, to define target architecture and flasher
+//! ```toml
+//! TODO
+//! ```
+//! * add this crate as dependency
+//! ```bash
+//! cargo add pybadge-high
 //! ```
 
 #[cfg(feature = "neopixel")]
@@ -32,7 +57,7 @@ use ws2812::Ws2812;
 use ws2812_timer_delay as ws2812;
 
 mod buttons;
-use buttons::Buttons;
+pub use buttons::Buttons;
 
 pub mod prelude {
 	pub use cortex_m_rt::entry;
@@ -62,13 +87,16 @@ pub type Display = ST7735<
 >;
 pub type Delay = edgebadge::delay::Delay;
 #[cfg(feature = "neopixel")]
+///The RGB NeoPixel leds below the display.
 pub type NeoPixel = Ws2812<
 	SpinTimer,
 	OldOutputPin<edgebadge::gpio::Pin<PA15, gpio::v2::Output<gpio::v2::PushPull>>>
 >;
 #[cfg(feature = "neopixel")]
+///Color type of the NeoPixel leds.
 pub type NeoPixelColor = <NeoPixel as SmartLedsWrite>::Color;
 
+///The red led at the back of the board.
 pub struct Led {
 	pin: Pin<PA23, Output<PushPull>>
 }
@@ -83,6 +111,7 @@ impl Led {
 	}
 }
 
+///Allow acces to the peripherals, like display, buttons, flash etc.
 pub struct PyBadge {
 	pub backlight: Backlight,
 	pub display: Display,

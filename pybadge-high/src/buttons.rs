@@ -16,6 +16,8 @@ const DOWN: u8 = 1 << 2;
 const UP: u8 = 1 << 1;
 const LEFT: u8 = 1;
 
+/// Store the state of the Buttons.
+/// Must be manual updated by calling [`.update()`](Self::update).
 pub struct Buttons {
 	pub(crate) current_state: u8,
 	pub(crate) laste_state: u8,
@@ -27,8 +29,8 @@ pub struct Buttons {
 }
 
 impl Buttons {
-	/// Check if any key is pressed
-	pub fn any_pressed(&self) -> bool {
+	/// Check if some key is pressed.
+	pub fn some_pressed(&self) -> bool {
 		self.current_state == 0
 	}
 
@@ -69,10 +71,10 @@ impl Buttons {
 		self.current_state & LEFT != 0
 	}
 
-	/// Returns a ButtonIter of button changes as Keys enums
-	pub fn event(&self) {}
+	//Returns a ButtonIter of button changes as Keys enums
+	//pub fn event(&self) {}
 
-	/// Update self the current button state.
+	/// Update the state of the buttons.
 	/// 400ns total blocking read.
 	//
 	//based on https://github.com/atsamd-rs/atsamd/blob/master/boards/pygamer/src/buttons.rs
