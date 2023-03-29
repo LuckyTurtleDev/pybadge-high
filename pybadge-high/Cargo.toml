@@ -5,9 +5,10 @@ version = "0.1.0"
 edition = "2021"
 
 [features]
-default = ["neopixel", "usb"]
+default = ["neopixel", "usb", "flash"]
 neopixel = ["dep:ws2812-timer-delay", "dep:smart-leds-trait", "dep:embedded-hal"]
 usb = ["edgebadge/usb", "dep:usb-device"]
+flash = []
 
 [dependencies]
 cortex-m = "0.7.7"

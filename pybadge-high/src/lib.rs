@@ -69,7 +69,9 @@ pub use buttons::Buttons;
 
 pub mod prelude {
 	pub use cortex_m_rt::entry;
-	pub use edgebadge::prelude::_embedded_hal_blocking_delay_DelayMs;
+	pub use edgebadge::prelude::{
+		_embedded_hal_blocking_delay_DelayMs, _embedded_hal_blocking_delay_DelayUs
+	};
 	#[cfg(feature = "neopixel")]
 	pub use smart_leds_trait::SmartLedsWrite;
 }
@@ -80,6 +82,11 @@ mod usb;
 pub use usb::Usb;
 #[cfg(feature = "usb")]
 pub use usb::UsbError;
+
+#[cfg(feature = "flash")]
+mod flash;
+#[cfg(feature = "flash")]
+pub use flash::Flash;
 
 ///Display Color type
 pub type Color = embedded_graphics::pixelcolor::Rgb565;
@@ -128,6 +135,8 @@ pub struct PyBadge {
 	pub delay: Delay,
 	#[cfg(feature = "neopixel")]
 	pub neopixel: NeoPixel,
+	#[cfg(feature = "flash")]
+	pub flash: Flash,
 	#[cfg(feature = "usb")]
 	pub usb: Usb
 }
@@ -186,6 +195,15 @@ impl PyBadge {
 			pins.neopixel.init(timer, &mut pins.port)
 		};
 
+		//flash
+		#[cfg(feature = "flash")]
+		let flash = flash::Flash::init(
+			pins.flash,
+			&mut peripherals.MCLK,
+			peripherals.QSPI,
+			&mut delay
+		);
+
 		//usb
 		#[cfg(feature = "usb")]
 		let usb = Usb::init(
@@ -200,6 +218,8 @@ impl PyBadge {
 			red_led,
 			#[cfg(feature = "neopixel")]
 			neopixel,
+			#[cfg(feature = "flash")]
+			flash,
 			#[cfg(feature = "usb")]
 			usb,
 			delay
