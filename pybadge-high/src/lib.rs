@@ -142,6 +142,9 @@ pub struct PyBadge {
 }
 
 impl PyBadge {
+	/// Returns all the supported peripherals.
+	/// This function can only called once,
+	/// otherwise it does return Err.
 	pub fn take() -> Result<PyBadge, ()> {
 		let mut peripherals = Peripherals::take().ok_or(())?;
 		let core = CorePeripherals::take().ok_or(())?;

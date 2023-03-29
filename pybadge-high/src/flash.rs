@@ -9,7 +9,8 @@ use pac::{MCLK, QSPI};
 ///
 /// Existing out of 8k pages, witch 265Bytes each.
 /// Page `i` starts at adress `i << 8` and ends with `(i << 8) + 255`.
-/// DataSheet: https://cdn-shop.adafruit.com/product-files/4763/4763_GD25Q16CTIGR.pdf
+///
+/// [DataSheet](https://cdn-shop.adafruit.com/product-files/4763/4763_GD25Q16CTIGR.pdf)
 pub struct Flash {
 	flash: edgebadge::qspi::Qspi<edgebadge::qspi::OneShot>
 }
