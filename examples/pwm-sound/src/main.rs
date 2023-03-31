@@ -9,9 +9,9 @@ use pybadge_high::prelude::*;
 #[entry]
 fn main() -> ! {
 	let pybadge = PyBadge::take().unwrap();
-	//let mut speaker = pybadge.speaker;
-	//speaker.set_freq();
-	//speaker.enable();
+	let mut speaker = pybadge.speaker;
+	speaker.set_freq();
+	speaker.enable();
 
 	loop {}
 }
