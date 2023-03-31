@@ -2,7 +2,7 @@
 #![allow(clippy::tabs_in_doc_comments)]
 #![warn(unreachable_pub)]
 #![cfg_attr(all(doc, nightly), feature(doc_auto_cfg))]
-//#![allow(deprecated)]
+#![allow(deprecated)]
 
 //! Goal of this crate is to provide **high level hardware abstraction** layer for the pybade and the edgebadge.
 //! It should allow people with no/less knowledge of rust and embedded hardware, to program the boards mention before.
@@ -46,7 +46,8 @@ use edgebadge::gpio::v2::PA15;
 use edgebadge::{
 	gpio,
 	gpio::{v2::PA23, *},
-	hal, pac,
+	hal,
+	pac::{self, port},
 	prelude::*,
 	Pins
 };
@@ -87,6 +88,11 @@ pub use usb::UsbError;
 mod flash;
 #[cfg(feature = "flash")]
 pub use flash::Flash;
+
+#[cfg(feature = "pwm_sound")]
+mod sound;
+#[cfg(feature = "pwm_sound")]
+use sound::PwmSound;
 
 ///Display Color type
 pub type Color = embedded_graphics::pixelcolor::Rgb565;
@@ -137,6 +143,8 @@ pub struct PyBadge {
 	pub neopixel: NeoPixel,
 	#[cfg(feature = "flash")]
 	pub flash: Flash,
+	#[cfg(feature = "pwm_sound")]
+	pub speaker: PwmSound,
 	#[cfg(feature = "usb")]
 	pub usb: Usb
 }
@@ -159,6 +167,7 @@ impl PyBadge {
 		let mut delay = hal::delay::Delay::new(core.SYST, &mut clocks);
 
 		//display
+		//move TC2
 		let (display, backlight) = pins.display.init(
 			&mut clocks,
 			peripherals.SERCOM4,
@@ -207,12 +216,37 @@ impl PyBadge {
 			&mut delay
 		);
 
+		//speaker
+		//move Tc3
+		//move tc2_tc3
+		#[cfg(feature = "pwm_sound")]
+		let speaker = {
+			let enable_pin = pins.speaker.enable.into_push_pull_output(&mut pins.port);
+			let speaker_pin = pins.speaker.speaker.into_push_pull_output(&mut pins.port);
+			let gclk = clocks.gclk0();
+			let tc = clocks.tc4_tc5(&gclk).unwrap();
+			let counter = edgebadge::thumbv7em::timer::TimerCounter::tc4_(
+				&tc,
+				peripherals.TC4,
+				&mut peripherals.MCLK
+			);
+			sound::PwmSound::init(enable_pin, speaker_pin, counter)
+		};
+
 		//usb
 		#[cfg(feature = "usb")]
 		let usb = Usb::init(
 			pins.usb
 				.init(peripherals.USB, &mut clocks, &mut peripherals.MCLK)
 		);
+
+		let mut speaker = pins.speaker.speaker.into_push_pull_output(&mut pins.port);
+		let mut enable = pins.speaker.enable.into_push_pull_output(&mut pins.port);
+		enable.set_high().unwrap();
+		loop {
+			speaker.toggle();
+			delay.delay_ms(6_u8);
+		}
 
 		Ok(PyBadge {
 			backlight,
@@ -223,6 +257,8 @@ impl PyBadge {
 			neopixel,
 			#[cfg(feature = "flash")]
 			flash,
+			#[cfg(feature = "pwm_sound")]
+			speaker,
 			#[cfg(feature = "usb")]
 			usb,
 			delay

@@ -9,6 +9,7 @@ default = ["neopixel", "usb", "flash"]
 neopixel = ["dep:ws2812-timer-delay", "dep:smart-leds-trait", "dep:embedded-hal"]
 usb = ["edgebadge/usb", "dep:usb-device"]
 flash = []
+pwm_sound = []
 
 [dependencies]
 cortex-m = "0.7.7"

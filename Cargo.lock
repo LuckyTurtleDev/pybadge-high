@@ -263,6 +263,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "pwm_sound"
+version = "0.1.0"
+dependencies = [
+ "cortex-m-rt",
+ "embedded-graphics",
+ "pybadge-high",
+]
+
+[[package]]
 name = "pybadge-high"
 version = "0.1.0"
 dependencies = [
