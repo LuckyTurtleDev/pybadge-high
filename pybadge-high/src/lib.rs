@@ -240,14 +240,6 @@ impl PyBadge {
 				.init(peripherals.USB, &mut clocks, &mut peripherals.MCLK)
 		);
 
-		let mut speaker = pins.speaker.speaker.into_push_pull_output(&mut pins.port);
-		let mut enable = pins.speaker.enable.into_push_pull_output(&mut pins.port);
-		enable.set_high().unwrap();
-		loop {
-			speaker.toggle();
-			delay.delay_ms(6_u8);
-		}
-
 		Ok(PyBadge {
 			backlight,
 			display,

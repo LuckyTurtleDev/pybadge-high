@@ -1,3 +1,4 @@
+use cortex_m::peripheral::NVIC;
 use edgebadge::{
 	gpio::{
 		v2::{PA02, PA27},
@@ -7,7 +8,7 @@ use edgebadge::{
 	pac::TC4 as TC,
 	prelude::*,
 	thumbv7em::timer::TimerCounter,
-	time::Hertz
+	time::{Hertz, Milliseconds}
 };
 use pac::interrupt;
 
@@ -34,17 +35,21 @@ impl PwmSound {
 	}
 
 	pub fn set_freq(&mut self) {
-		self.counter.start(Hertz(300 / 2));
+		self.counter.start(Milliseconds(6));
 	}
 
 	pub fn enable(&mut self) {
 		self.enable.set_high().unwrap();
 		self.counter.enable_interrupt();
+		unsafe {
+			NVIC::unmask(interrupt::TC4);
+		}
 	}
 
 	pub fn disable(&mut self) {
 		self.enable.set_low().unwrap();
 		self.counter.disable_interrupt();
+		NVIC::mask(interrupt::TC4);
 	}
 }
 
