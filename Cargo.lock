@@ -496,6 +496,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1f6cc3adc849b5292b4075fc0d5fdcf2f24866e88e336dd27a8943090a520508"
 
 [[package]]
+name = "usb-poll"
+version = "0.1.0"
+dependencies = [
+ "cortex-m-rt",
+ "embedded-graphics",
+ "heapless",
+ "pybadge-high",
+]
+
+[[package]]
 name = "usbd-serial"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
