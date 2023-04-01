@@ -1,6 +1,8 @@
 #![no_std]
 #![no_main]
 
+//! Show send data at the display of the pybadge and send uppercase version back
+
 use cortex_m_rt::entry;
 use embedded_graphics::{
 	mono_font::{ascii::FONT_6X10, MonoTextStyle},
@@ -29,7 +31,7 @@ fn main() -> ! {
 				_ => panic!()
 			}
 		};
-		let string: String<64> = buf
+		let mut string: String<64> = buf
 			.into_iter()
 			.take(read_count)
 			.map(|f| char::from(f))
@@ -38,5 +40,7 @@ fn main() -> ! {
 		Text::new(&string, Point::new(20, 30), style)
 			.draw(&mut display)
 			.unwrap();
+		string.make_ascii_uppercase();
+		usb.write(string.as_bytes()).unwrap();
 	}
 }
