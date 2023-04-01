@@ -280,9 +280,16 @@ fn panic(_info: &core::panic::PanicInfo) -> ! {
 	let mut delay = hal::delay::Delay::new(core.SYST, &mut clocks);
 	let mut speaker = pins.speaker.into_push_pull_output(&mut pins.port);
 	let mut speaker_enable = pins.speaker_enable.into_push_pull_output(&mut pins.port);
+	let mut i = 0_u8;
 	loop {
 		led.toggle();
-		speaker_enable.toggle();
+		//stop sound after 3 seconds (it is annoying)
+		if i <= 8 {
+			speaker_enable.toggle();
+			i += 1
+		} else {
+			speaker_enable.set_low().ok();
+		}
 		for _ in 0..100 {
 			delay.delay_ms(2_u8);
 			speaker.toggle();
