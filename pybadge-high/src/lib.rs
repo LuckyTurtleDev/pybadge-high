@@ -278,10 +278,14 @@ fn panic(_info: &core::panic::PanicInfo) -> ! {
 		&mut peripherals.NVMCTRL
 	);
 	let mut delay = hal::delay::Delay::new(core.SYST, &mut clocks);
+	let mut speaker = pins.speaker.into_push_pull_output(&mut pins.port);
+	let mut speaker_enable = pins.speaker_enable.into_push_pull_output(&mut pins.port);
 	loop {
-		led.set_high().ok();
-		delay.delay_ms(200_u8);
-		led.set_low().ok();
-		delay.delay_ms(200_u8);
+		led.toggle();
+		speaker_enable.toggle();
+		for _ in 0..100 {
+			delay.delay_ms(2_u8);
+			speaker.toggle();
+		}
 	}
 }
