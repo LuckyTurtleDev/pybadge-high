@@ -41,11 +41,11 @@ impl PwmSound {
 		let mut time: Nanoseconds = freq.into();
 		time.0 = time.0 / 2;
 		self.counter.start(time);
+		self.counter.enable_interrupt();
 	}
 
 	pub fn enable(&mut self) {
 		self.enable.set_high().unwrap();
-		self.counter.enable_interrupt();
 		unsafe {
 			NVIC::unmask(interrupt::TC4);
 		}
@@ -53,7 +53,6 @@ impl PwmSound {
 
 	pub fn disable(&mut self) {
 		self.enable.set_low().unwrap();
-		self.counter.disable_interrupt();
 		NVIC::mask(interrupt::TC4);
 	}
 }
@@ -62,5 +61,13 @@ impl PwmSound {
 fn TC4() {
 	unsafe {
 		SPAKER_PIN.as_mut().unwrap().toggle();
+	}
+	unsafe {
+		TC::ptr()
+			.as_ref()
+			.unwrap()
+			.count16()
+			.intflag
+			.modify(|_, w| w.ovf().set_bit());
 	}
 }

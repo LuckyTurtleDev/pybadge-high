@@ -31,12 +31,12 @@ pub struct Buttons {
 impl Buttons {
 	/// Check if some key is pressed.
 	pub fn some_pressed(&self) -> bool {
-		self.current_state == 0
+		self.current_state != 0
 	}
 
 	/// Check if none key is pressed
 	pub fn none_pressed(&self) -> bool {
-		self.current_state != 0
+		self.current_state == 0
 	}
 
 	pub fn a_pressed(&self) -> bool {
