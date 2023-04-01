@@ -7,4 +7,4 @@ publish = false
 
 [dependencies]
 embedded-graphics = "0.7.1"
-pybadge-high = { version = "0.1.0", path = "../../pybadge-high" }
+pybadge-high = { version = "0.1.0", path = "../../pybadge-high"}

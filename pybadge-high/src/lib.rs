@@ -43,6 +43,7 @@
 
 #[cfg(feature = "neopixel")]
 use edgebadge::gpio::v2::PA15;
+pub use edgebadge::time;
 use edgebadge::{
 	gpio,
 	gpio::{v2::PA23, *},
@@ -223,7 +224,7 @@ impl PyBadge {
 		let speaker = {
 			let enable_pin = pins.speaker.enable.into_push_pull_output(&mut pins.port);
 			let speaker_pin = pins.speaker.speaker.into_push_pull_output(&mut pins.port);
-			let gclk = clocks.gclk0();
+			let gclk = clocks.gclk1();
 			let tc = clocks.tc4_tc5(&gclk).unwrap();
 			let counter = edgebadge::thumbv7em::timer::TimerCounter::tc4_(
 				&tc,

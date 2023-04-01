@@ -8,7 +8,7 @@ use edgebadge::{
 	pac::TC4 as TC,
 	prelude::*,
 	thumbv7em::timer::TimerCounter,
-	time::{Hertz, Milliseconds}
+	time::{Hertz, Milliseconds, Nanoseconds}
 };
 use pac::interrupt;
 
@@ -34,8 +34,13 @@ impl PwmSound {
 		}
 	}
 
-	pub fn set_freq(&mut self) {
-		self.counter.start(Milliseconds(6));
+	pub fn set_freq<T>(&mut self, freq: T)
+	where
+		T: Into<Nanoseconds>
+	{
+		let mut time: Nanoseconds = freq.into();
+		time.0 = time.0 / 2;
+		self.counter.start(time);
 	}
 
 	pub fn enable(&mut self) {
