@@ -60,7 +60,7 @@ impl PwmSound {
 #[interrupt]
 fn TC4() {
 	//clear intfalg, oterwise interrup is fired again at the next cycle
-		unsafe {
+	unsafe {
 		TC::ptr()
 			.as_ref()
 			.unwrap()

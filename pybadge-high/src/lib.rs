@@ -46,8 +46,7 @@ use edgebadge::gpio::v2::PA15;
 use edgebadge::{
 	gpio,
 	gpio::{v2::PA23, *},
-	hal,
-	pac,
+	hal, pac,
 	prelude::*,
 	Pins
 };
