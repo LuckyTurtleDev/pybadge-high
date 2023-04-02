@@ -43,12 +43,11 @@
 
 #[cfg(feature = "neopixel")]
 use edgebadge::gpio::v2::PA15;
-pub use edgebadge::time;
 use edgebadge::{
 	gpio,
 	gpio::{v2::PA23, *},
 	hal,
-	pac::{self, port},
+	pac,
 	prelude::*,
 	Pins
 };
@@ -65,6 +64,8 @@ use st7735_lcd::ST7735;
 use ws2812::Ws2812;
 #[cfg(feature = "neopixel")]
 use ws2812_timer_delay as ws2812;
+
+pub mod time;
 
 mod buttons;
 pub use buttons::Buttons;
@@ -217,21 +218,38 @@ impl PyBadge {
 			&mut delay
 		);
 
+		//32kHz clock to be used for sound and time at TC4 and TC5
+		//move tc4_tc5
+		#[cfg(any(feature = "pwm_sound", feature = "time"))]
+		let tc4_tc5 = {
+			let gclk = clocks.gclk1();
+			clocks.tc4_tc5(&gclk).unwrap()
+		};
+
 		//speaker
-		//move Tc3
-		//move tc2_tc3
+		//move Tc4
 		#[cfg(feature = "pwm_sound")]
 		let speaker = {
 			let enable_pin = pins.speaker.enable.into_push_pull_output(&mut pins.port);
 			let speaker_pin = pins.speaker.speaker.into_push_pull_output(&mut pins.port);
-			let gclk = clocks.gclk1();
-			let tc = clocks.tc4_tc5(&gclk).unwrap();
 			let counter = edgebadge::thumbv7em::timer::TimerCounter::tc4_(
-				&tc,
+				&tc4_tc5,
 				peripherals.TC4,
 				&mut peripherals.MCLK
 			);
 			sound::PwmSound::init(enable_pin, speaker_pin, counter)
+		};
+
+		//time
+		//move TC5
+		#[cfg(feature = "time")]
+		{
+			let counter = edgebadge::thumbv7em::timer::TimerCounter::tc5_(
+				&tc4_tc5,
+				peripherals.TC5,
+				&mut peripherals.MCLK
+			);
+			time::init_counter(counter);
 		};
 
 		//usb

@@ -8,7 +8,7 @@ use embedded_graphics::{
 	text::Text
 };
 use heapless::String;
-use pybadge::{prelude::*, Buttons, Display, PyBadge};
+use pybadge::{prelude::*, Display, PyBadge};
 use pybadge_high as pybadge;
 use pybadge_high::{time::Hertz, Color};
 

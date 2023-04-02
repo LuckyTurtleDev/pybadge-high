@@ -8,7 +8,7 @@ use edgebadge::{
 	pac::TC4 as TC,
 	prelude::*,
 	thumbv7em::timer::TimerCounter,
-	time::{Hertz, Milliseconds, Nanoseconds}
+	time::Nanoseconds
 };
 use pac::interrupt;
 
@@ -59,15 +59,16 @@ impl PwmSound {
 
 #[interrupt]
 fn TC4() {
-	unsafe {
-		SPAKER_PIN.as_mut().unwrap().toggle();
-	}
-	unsafe {
+	//clear intfalg, oterwise interrup is fired again at the next cycle
+		unsafe {
 		TC::ptr()
 			.as_ref()
 			.unwrap()
 			.count16()
 			.intflag
 			.modify(|_, w| w.ovf().set_bit());
+	}
+	unsafe {
+		SPAKER_PIN.as_mut().unwrap().toggle();
 	}
 }

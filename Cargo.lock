@@ -478,6 +478,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "time"
+version = "0.1.0"
+dependencies = [
+ "cortex-m-rt",
+ "embedded-graphics",
+ "heapless",
+ "pybadge-high",
+]
+
+[[package]]
 name = "typenum"
 version = "1.16.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
