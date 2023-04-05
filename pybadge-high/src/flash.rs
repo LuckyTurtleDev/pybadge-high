@@ -33,13 +33,13 @@ impl Flash {
 		);
 
 		// Startup delay. Can't find documented but Adafruit use 5ms
-		delay.delay_ms(5u8);
+		delay.delay_ms(15u8);
 		// Reset. It is recommended to check the BUSY(WIP?) bit and the SUS before reset
 		wait_ready(&mut flash);
 		flash.run_command(Command::EnableReset).unwrap();
 		flash.run_command(Command::Reset).unwrap();
-		// tRST(30μs) to reset. During this period, no command will be accepted
-		delay.delay_ms(1u8);
+		// tRST to reset. During this period, no command will be accepted
+		delay.delay_ms(15u8);
 
 		// 120MHz / 2 = 60mhz
 		// faster than 104mhz at 3.3v would require High Performance Mode
@@ -47,7 +47,9 @@ impl Flash {
 
 		// Enable Quad SPI mode. Requires write enable. Check WIP.
 		flash.run_command(Command::WriteEnable).unwrap();
-		flash.write_command(Command::WriteStatus2, &[0x02]).unwrap();
+		flash
+			.write_command(Command::WriteStatus, &[0, 0x02])
+			.unwrap(); //set QE bit
 		wait_ready(&mut flash);
 
 		Self { flash }

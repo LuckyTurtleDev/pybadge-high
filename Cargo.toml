@@ -1,2 +1,2 @@
 [workspace]
-members = ["pybadge-high", "examples/flashing-display/", "examples/buttons/", "examples/blinking-led", "examples/neopixel", "examples/pwm-sound", "examples/usb-poll", "examples/time"]
+members = ["pybadge-high", "examples/flashing-display/", "examples/buttons/", "examples/blinking-led", "examples/neopixel", "examples/pwm-sound", "examples/usb-poll", "examples/time", "examples/flash"]
