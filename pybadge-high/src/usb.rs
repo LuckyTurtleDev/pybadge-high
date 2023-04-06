@@ -9,11 +9,9 @@ static mut USB_DEV: Option<UsbDevice<UsbBus>> = None;
 static mut USB_SERIAL: Option<SerialPort<UsbBus>> = None;
 
 /// USB connection for serial communication.
-pub struct Usb {
-	// prevent the user from creating this struct manual, without calling init.
-	// to make sure static varibale are Some.
-	_dummy: ()
-}
+#[non_exhaustive] // prevent the user from creating this struct manual, without calling init.
+				  // to make sure static varibale are Some.
+pub struct Usb {}
 
 impl Usb {
 	pub(crate) fn init(usb_allocator: UsbBusAllocator<UsbBus>) -> Self {
@@ -36,7 +34,7 @@ impl Usb {
 				.build()
 			);
 		}
-		Usb { _dummy: () }
+		Usb {}
 	}
 
 	/// Polls the UsbBus for new events.

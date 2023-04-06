@@ -87,6 +87,7 @@ pub use usb::UsbError;
 
 #[cfg(feature = "flash")]
 mod flash;
+#[doc(hidden)] //feature temporary disable
 #[cfg(feature = "flash")]
 pub use flash::Flash;
 
@@ -134,6 +135,7 @@ impl Led {
 }
 
 ///Allow acces to the peripherals, like display, buttons, flash etc.
+#[non_exhaustive]
 pub struct PyBadge {
 	pub backlight: Backlight,
 	pub display: Display,
@@ -142,6 +144,7 @@ pub struct PyBadge {
 	pub delay: Delay,
 	#[cfg(feature = "neopixel")]
 	pub neopixel: NeoPixel,
+	#[doc(hidden)] //feature temporary disable
 	#[cfg(feature = "flash")]
 	pub flash: Flash,
 	#[cfg(feature = "pwm_sound")]

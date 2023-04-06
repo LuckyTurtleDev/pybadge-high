@@ -1,6 +1,8 @@
 #![no_std]
 #![no_main]
 
+!!! FLASH DOES NOT WORK AND IS DISABLE NOW !!!
+
 use core::fmt::Write;
 use embedded_graphics::{
 	mono_font::{ascii::FONT_6X10, MonoTextStyle},
