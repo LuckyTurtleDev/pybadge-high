@@ -13,7 +13,7 @@
 //! #### Installation
 //! * Install rustup.
 //! I recommand to use the [package manger](https://repology.org/project/rustup/versions) of your operation system.
-//! Alternative you can install it from https://www.rust-lang.org/tools/install
+//! Alternative you can install it from <https://www.rust-lang.org/tools/install>
 //! * install the rust thumbv7em-none-eabihf target. (the architecture of the micronctroller)
 //! ```bash
 //! rustup target install thumbv7em-none-eabihf
@@ -27,11 +27,52 @@
 //! ```
 //! * Add a `.carge/config.toml` with the following content, to define target architecture and flasher
 //! ```toml
-//! TODO
+//! [target.thumbv7em-none-eabihf]
+//! runner = "hf2 elf"
+//! #runner = 'probe-run --chip ATSAMD51J19A'
+//!
+//! [build]
+//! target = "thumbv7em-none-eabihf"
+//! rustflags = [
+//!
+//!   # This is needed if your flash or ram addresses are not aligned to 0x10000 in memory.x
+//!   # See https://github.com/rust-embedded/cortex-m-quickstart/pull/95
+//!   "-C", "link-arg=--nmagic",
+//!
+//!   "-C", "link-arg=-Tlink.x",
+//! ]
+//!
+//! [profile.release]
+//! codegen-units = 1 # better optimizations
+//! debug = true # symbols are nice and they don't increase the size on Flash
+//! lto = true # better optimizations
 //! ```
 //! * Add this crate as dependency
 //! ```bash
 //! cargo add pybadge-high
+//! ```
+//!
+//! * Addjust your `main.rs`
+//! You need to do some changes at your `main.rs`.
+//! First you must disable the rust standart libary by adding `#![no_std]`, because it does not supported the pybadge.
+//! This does also mean you can not use the default main function and must disable it with `#![no_main]`.
+//! But because we still need a main function we need to define our own with `#[entry]`.
+//! This main function does never return (`!`).
+//! Otherwise the pybadge would do random stuff after the program has finish.
+//! So we need a endless loop.
+//! To get access to the peripherals of the pybadge, like display, buttons, leds etc you call [`PyBadge::take()`];
+//! This function can only called once at runtime otherwise it will return an Error.
+//! ```
+//! #![no_std]
+//! #![no_main]
+//!
+//! use pybadge_high::{prelude::*, PyBadge};
+//!
+//! #[entry]
+//! fn main() -> ! {
+//! 	let mut pybadge = PyBadge::take().unwrap();
+//! 	loop {}
+//! }
 //! ```
 //!
 //! #### Flashing:
@@ -40,6 +81,7 @@
 //! ```bash
 //! cargo run --release
 //! ```
+//! The display does not work until you have press the reset button of the pybadge after flashing.
 
 #[cfg(feature = "neopixel")]
 use edgebadge::gpio::v2::PA15;
@@ -135,6 +177,8 @@ impl Led {
 }
 
 ///Allow acces to the peripherals, like display, buttons, flash etc.
+///
+///Can only called once at runtime otherwise it will return an Error.
 #[non_exhaustive]
 pub struct PyBadge {
 	pub backlight: Backlight,

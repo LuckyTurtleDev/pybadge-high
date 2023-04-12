@@ -8,7 +8,7 @@ Goal of this crate is to provide **high level hardware abstraction** layer for t
 
 ##### Installation
 
- - Install rustup. I recommand to use the [package manger][__link2] of your operation system. Alternative you can install it from https://www.rust-lang.org/tools/install
+ - Install rustup. I recommand to use the [package manger][__link2] of your operation system. Alternative you can install it from <https://www.rust-lang.org/tools/install>
  - install the rust thumbv7em-none-eabihf target. (the architecture of the micronctroller)
 
 
@@ -16,7 +16,7 @@ Goal of this crate is to provide **high level hardware abstraction** layer for t
 rustup target install thumbv7em-none-eabihf
 ```
 
- - install the [hf2-cli][__link3] flasher
+ - install the [hf2-cli][__link4] flasher
 
 
 ##### Create your Project
@@ -32,7 +32,25 @@ cargo new my-app
 
 
 ```toml
-TODO
+[target.thumbv7em-none-eabihf]
+runner = "hf2 elf"
+#runner = 'probe-run --chip ATSAMD51J19A'
+
+[build]
+target = "thumbv7em-none-eabihf"
+rustflags = [
+
+  # This is needed if your flash or ram addresses are not aligned to 0x10000 in memory.x
+  # See https://github.com/rust-embedded/cortex-m-quickstart/pull/95
+  "-C", "link-arg=--nmagic",
+
+  "-C", "link-arg=-Tlink.x",
+]
+
+[profile.release]
+codegen-units = 1 # better optimizations
+debug = true # symbols are nice and they don't increase the size on Flash
+lto = true # better optimizations
 ```
 
  - Add this crate as dependency
@@ -40,6 +58,22 @@ TODO
 
 ```bash
 cargo add pybadge-high
+```
+
+ - Addjust your `main.rs` You need to do some changes at your `main.rs`. First you must disable the rust standart libary by adding `#![no_std]`, because it does not supported the pybadge. This does also mean you can not use the default main function and must disable it with `#![no_main]`. But because we still need a main function we need to define our own with `#[entry]`. This main function does never return (`!`). Otherwise the pybadge would do random stuff after the program has finish. So we need a endless loop. To get access to the peripherals of the pybadge, like display, buttons, leds etc you call [`PyBadge::take()`][__link5]; This function can only called once at runtime otherwise it will return an Error.
+
+
+```rust
+#![no_std]
+#![no_main]
+
+use pybadge_high::{prelude::*, PyBadge};
+
+#[entry]
+fn main() -> ! {
+	let mut pybadge = PyBadge::take().unwrap();
+	loop {}
+}
 ```
 
 
@@ -52,8 +86,11 @@ To flash you program, put your device in bootloader mode by hitting the reset bu
 cargo run --release
 ```
 
+The display does not work until you have press the reset button of the pybadge after flashing.
+
 
  [__link0]: https://crates.io/crates/edgebadge
  [__link1]: https://docs.rs/atsamd-hal/latest/atsamd_hal/
  [__link2]: https://repology.org/project/rustup/versions
- [__link3]: https://crates.io/crates/hf2-cli
+ [__link4]: https://crates.io/crates/hf2-cli
+ [__link5]: `PyBadge::take()`
