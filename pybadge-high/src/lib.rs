@@ -18,6 +18,10 @@
 //! ```bash
 //! rustup target install thumbv7em-none-eabihf
 //! ```
+//! * optional: install nightly toolchain for better doc.
+//! ```
+//! rustup toolchain install nightly --target thumbv7em-none-eabihf
+//! ```
 //! * install the [hf2-cli](https://crates.io/crates/hf2-cli) flasher
 //!
 //! #### Create your Project

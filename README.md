@@ -16,6 +16,13 @@ Goal of this crate is to provide **high level hardware abstraction** layer for t
 rustup target install thumbv7em-none-eabihf
 ```
 
+ - optional: install nightly toolchain for better doc.
+
+
+```rust
+rustup toolchain install nightly --target thumbv7em-none-eabihf
+```
+
  - install the [hf2-cli][__link4] flasher
 
 
