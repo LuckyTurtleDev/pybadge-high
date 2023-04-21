@@ -182,7 +182,7 @@ impl Led {
 ///
 ///Can only called once at runtime otherwise it will return an Error.
 #[non_exhaustive]
-pub struct PyBadge<'a> {
+pub struct PyBadge {
 	pub backlight: Backlight,
 	pub display: Display,
 	pub buttons: Buttons,
@@ -196,14 +196,14 @@ pub struct PyBadge<'a> {
 	#[cfg(feature = "pwm_sound")]
 	pub speaker: PwmSound,
 	#[cfg(feature = "usb")]
-	pub usb: UsbBuilder<'a>
+	pub usb: UsbBuilder
 }
 
-impl<'a> PyBadge<'a> {
+impl PyBadge {
 	/// Returns all the supported peripherals.
 	/// This function can only called once,
 	/// otherwise it does return Err.
-	pub fn take() -> Result<PyBadge<'a>, ()> {
+	pub fn take() -> Result<PyBadge, ()> {
 		let mut peripherals = Peripherals::take().ok_or(())?;
 		let core = CorePeripherals::take().ok_or(())?;
 		let mut clocks = GenericClockController::with_internal_32kosc(
