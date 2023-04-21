@@ -125,11 +125,9 @@ pub mod prelude {
 }
 
 #[cfg(feature = "usb")]
-mod usb;
+pub mod usb;
 #[cfg(feature = "usb")]
-pub use usb::Usb;
-#[cfg(feature = "usb")]
-pub use usb::UsbError;
+use usb::UsbBuilder;
 
 #[cfg(feature = "flash")]
 mod flash;
@@ -184,7 +182,7 @@ impl Led {
 ///
 ///Can only called once at runtime otherwise it will return an Error.
 #[non_exhaustive]
-pub struct PyBadge {
+pub struct PyBadge<'a> {
 	pub backlight: Backlight,
 	pub display: Display,
 	pub buttons: Buttons,
@@ -198,14 +196,14 @@ pub struct PyBadge {
 	#[cfg(feature = "pwm_sound")]
 	pub speaker: PwmSound,
 	#[cfg(feature = "usb")]
-	pub usb: Usb
+	pub usb: UsbBuilder<'a>
 }
 
-impl PyBadge {
+impl<'a> PyBadge<'a> {
 	/// Returns all the supported peripherals.
 	/// This function can only called once,
 	/// otherwise it does return Err.
-	pub fn take() -> Result<PyBadge, ()> {
+	pub fn take() -> Result<PyBadge<'a>, ()> {
 		let mut peripherals = Peripherals::take().ok_or(())?;
 		let core = CorePeripherals::take().ok_or(())?;
 		let mut clocks = GenericClockController::with_internal_32kosc(
@@ -304,10 +302,17 @@ impl PyBadge {
 
 		//usb
 		#[cfg(feature = "usb")]
-		let usb = Usb::init(
-			pins.usb
-				.init(peripherals.USB, &mut clocks, &mut peripherals.MCLK)
-		);
+		let usb = UsbBuilder {
+			usb_vid: 0x16c0,
+			usb_pid: 0x27dd,
+			manufacturer: "Fake company",
+			product: "Serial port",
+			serial_number: "Test",
+			pins: pins.usb,
+			peripherals: peripherals.USB,
+			clocks,
+			mclk: peripherals.MCLK
+		};
 
 		Ok(PyBadge {
 			backlight,

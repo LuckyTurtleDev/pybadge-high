@@ -1,5 +1,6 @@
-use edgebadge::hal;
-use hal::usb::UsbBus;
+use edgebadge::{hal, pac, pins::USB as UsbPins};
+use hal::{clock::GenericClockController, usb::UsbBus};
+use pac::{MCLK, USB as UsbPeripherals};
 pub use usb_device::UsbError;
 use usb_device::{bus::UsbBusAllocator, prelude::*};
 use usbd_serial::{SerialPort, USB_CLASS_CDC};
@@ -75,4 +76,25 @@ impl Usb {
 	}
 	//TODO: wrap more function from https://docs.rs/usbd-serial/0.1.1/usbd_serial/struct.SerialPort.html
 	//TODO: wrap more function from https://docs.rs/usb-device/0.2.9/usb_device/device/struct.UsbDevice.html
+}
+
+pub struct UsbBuilder<'a> {
+	pub(crate) usb_vid: u16,
+	pub(crate) usb_pid: u16,
+	pub(crate) manufacturer: &'a str,
+	pub(crate) product: &'a str,
+	pub(crate) serial_number: &'a str,
+	pub(crate) pins: UsbPins,
+	pub(crate) clocks: GenericClockController,
+	pub(crate) mclk: MCLK,
+	pub(crate) peripherals: UsbPeripherals
+}
+
+impl<'a> UsbBuilder<'a> {
+	pub fn build(mut self) -> Usb {
+		let usb_allocator =
+			self.pins
+				.init(self.peripherals, &mut self.clocks, &mut self.mclk);
+		Usb::init(usb_allocator)
+	}
 }
