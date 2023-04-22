@@ -196,7 +196,7 @@ pub struct PyBadge {
 	#[cfg(feature = "pwm_sound")]
 	pub speaker: PwmSound,
 	#[cfg(feature = "usb")]
-	pub usb: UsbBuilder
+	pub usb_builder: UsbBuilder
 }
 
 impl PyBadge {
@@ -302,7 +302,7 @@ impl PyBadge {
 
 		//usb
 		#[cfg(feature = "usb")]
-		let usb = UsbBuilder {
+		let usb_builder = UsbBuilder {
 			usb_vid: 0x16c0,
 			usb_pid: 0x27dd,
 			manufacturer: "Fake company",
@@ -326,7 +326,7 @@ impl PyBadge {
 			#[cfg(feature = "pwm_sound")]
 			speaker,
 			#[cfg(feature = "usb")]
-			usb,
+			usb_builder,
 			delay
 		})
 	}
