@@ -10,14 +10,14 @@ use embedded_graphics::{
 	text::Text
 };
 use heapless::String;
-use pybadge::{PyBadge, UsbError};
+use pybadge::{usb::UsbError, PyBadge};
 use pybadge_high as pybadge;
 use pybadge_high::Color;
 
 #[entry]
 fn main() -> ! {
 	let pybadge = PyBadge::take().unwrap();
-	let mut usb = pybadge.usb;
+	let mut usb = pybadge.usb_builder.build();
 	let mut display = pybadge.display;
 	let style = MonoTextStyle::new(&FONT_6X10, Color::WHITE);
 	display.clear(Color::BLACK).unwrap();

@@ -125,11 +125,9 @@ pub mod prelude {
 }
 
 #[cfg(feature = "usb")]
-mod usb;
+pub mod usb;
 #[cfg(feature = "usb")]
-pub use usb::Usb;
-#[cfg(feature = "usb")]
-pub use usb::UsbError;
+use usb::UsbBuilder;
 
 #[cfg(feature = "flash")]
 mod flash;
@@ -198,7 +196,7 @@ pub struct PyBadge {
 	#[cfg(feature = "pwm_sound")]
 	pub speaker: PwmSound,
 	#[cfg(feature = "usb")]
-	pub usb: Usb
+	pub usb_builder: UsbBuilder
 }
 
 impl PyBadge {
@@ -304,10 +302,17 @@ impl PyBadge {
 
 		//usb
 		#[cfg(feature = "usb")]
-		let usb = Usb::init(
-			pins.usb
-				.init(peripherals.USB, &mut clocks, &mut peripherals.MCLK)
-		);
+		let usb_builder = UsbBuilder {
+			usb_vid: 0x16c0,
+			usb_pid: 0x27dd,
+			manufacturer: "Fake company",
+			product: "Serial port",
+			serial_number: "Test",
+			pins: pins.usb,
+			peripherals: peripherals.USB,
+			clocks,
+			mclk: peripherals.MCLK
+		};
 
 		Ok(PyBadge {
 			backlight,
@@ -321,7 +326,7 @@ impl PyBadge {
 			#[cfg(feature = "pwm_sound")]
 			speaker,
 			#[cfg(feature = "usb")]
-			usb,
+			usb_builder,
 			delay
 		})
 	}
