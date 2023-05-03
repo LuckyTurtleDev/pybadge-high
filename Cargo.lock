@@ -426,6 +426,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5a9f47faea3cad316faa914d013d24f471cd90bfca1a0c70f05a3f42c6441e99"
 
 [[package]]
+name = "smart-leds"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "38dd45fa275f70b4110eac5f5182611ad384f88bb22b68b9a9c3cafd7015290b"
+dependencies = [
+ "smart-leds-trait",
+]
+
+[[package]]
 name = "smart-leds-trait"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -504,6 +513,14 @@ name = "usb-device"
 version = "0.2.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1f6cc3adc849b5292b4075fc0d5fdcf2f24866e88e336dd27a8943090a520508"
+
+[[package]]
+name = "usb-interrupt-neopixel"
+version = "0.1.0"
+dependencies = [
+ "pybadge-high",
+ "smart-leds",
+]
 
 [[package]]
 name = "usb-poll"
