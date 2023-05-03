@@ -101,7 +101,7 @@ use embedded_hal::digital::v1_compat::OldOutputPin;
 #[cfg(feature = "neopixel")]
 use hal::timer::SpinTimer;
 use hal::{clock::GenericClockController, pwm::Pwm2, sercom::SPIMaster4};
-use pac::{CorePeripherals, Peripherals};
+use pac::{interrupt, CorePeripherals, Peripherals};
 #[cfg(feature = "neopixel")]
 use smart_leds_trait::SmartLedsWrite;
 use st7735_lcd::ST7735;
@@ -205,7 +205,7 @@ impl PyBadge {
 	/// otherwise it does return Err.
 	pub fn take() -> Result<PyBadge, ()> {
 		let mut peripherals = Peripherals::take().ok_or(())?;
-		let core = CorePeripherals::take().ok_or(())?;
+		let mut core = CorePeripherals::take().ok_or(())?;
 		let mut clocks = GenericClockController::with_internal_32kosc(
 			peripherals.GCLK,
 			&mut peripherals.MCLK,
@@ -298,11 +298,20 @@ impl PyBadge {
 				&mut peripherals.MCLK
 			);
 			time::init_counter(counter);
+			unsafe {
+				//set priority to highest, to make measurement more exactly
+				core.NVIC.set_priority(interrupt::TC5, 0);
+			}
 		};
 
 		//usb
 		#[cfg(feature = "usb")]
 		let usb_builder = {
+			unsafe {
+				core.NVIC.set_priority(interrupt::USB_OTHER, 1);
+				core.NVIC.set_priority(interrupt::USB_TRCPT0, 1);
+				core.NVIC.set_priority(interrupt::USB_TRCPT1, 1);
+			}
 			UsbBuilder {
 				usb_vid: 0x16c0,
 				usb_pid: 0x27dd,
