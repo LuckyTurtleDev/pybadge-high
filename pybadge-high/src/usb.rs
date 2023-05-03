@@ -1,6 +1,6 @@
 use edgebadge::{hal, pac, pins::USB as UsbPins};
 use hal::{clock::GenericClockController, usb::UsbBus};
-use pac::{MCLK, USB as UsbPeripherals};
+use pac::{interrupt, MCLK, USB as UsbPeripherals};
 pub use usb_device::UsbError;
 use usb_device::{bus::UsbBusAllocator, prelude::*};
 use usbd_serial::{SerialPort, USB_CLASS_CDC};
@@ -8,6 +8,7 @@ use usbd_serial::{SerialPort, USB_CLASS_CDC};
 static mut USB_ALLOCATOR: Option<UsbBusAllocator<UsbBus>> = None;
 static mut USB_DEV: Option<UsbDevice<UsbBus>> = None;
 static mut USB_SERIAL: Option<SerialPort<UsbBus>> = None;
+static mut INTERRUPT_HANDLER: Option<fn()> = None;
 
 /// USB connection for serial communication.
 #[non_exhaustive] // prevent the user from creating this struct manual, without calling init.
@@ -127,4 +128,26 @@ impl UsbBuilder {
 		self.serial_number = serial_number;
 		self
 	}
+}
+
+fn handle_interrupt() {
+	//should I prefer panic instead? So the user get a respons
+	if let Some(handler) = unsafe { INTERRUPT_HANDLER } {
+		handler();
+	};
+}
+
+#[interrupt]
+fn USB_OTHER() {
+	handle_interrupt()
+}
+
+#[interrupt]
+fn USB_TRCPT0() {
+	handle_interrupt()
+}
+
+#[interrupt]
+fn USB_TRCPT1() {
+	handle_interrupt()
 }
