@@ -1,3 +1,4 @@
+use cortex_m::peripheral::NVIC;
 use edgebadge::{hal, pac, pins::USB as UsbPins};
 use hal::{clock::GenericClockController, usb::UsbBus};
 use pac::{interrupt, MCLK, USB as UsbPeripherals};
@@ -54,6 +55,26 @@ impl Usb {
 	}
 	//TODO: wrap more function from https://docs.rs/usbd-serial/0.1.1/usbd_serial/struct.SerialPort.html
 	//TODO: wrap more function from https://docs.rs/usb-device/0.2.9/usb_device/device/struct.UsbDevice.html
+
+	///use the given function as interrupt handler.
+	///
+	///Interupt must still be enable by calling [`enable_interrupt()`](UsbError::enable_interrupt).
+	pub fn set_interrupt(&mut self, handler: fn()) {
+		unsafe { INTERRUPT_HANDLER = Some(handler) }
+	}
+
+	pub fn enable_interrupt(&mut self) {
+		unsafe {
+			NVIC::unmask(interrupt::USB_OTHER);
+			NVIC::unmask(interrupt::USB_TRCPT0);
+			NVIC::unmask(interrupt::USB_TRCPT1);
+		}
+	}
+	pub fn disable_interrupt(&mut self) {
+		NVIC::mask(interrupt::USB_OTHER);
+		NVIC::mask(interrupt::USB_TRCPT0);
+		NVIC::mask(interrupt::USB_TRCPT1);
+	}
 }
 
 pub struct UsbBuilder {
