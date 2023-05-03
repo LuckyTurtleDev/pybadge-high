@@ -17,12 +17,12 @@ fn main() -> ! {
 
 	//set usb + interrupt
 	let mut usb = pybadge.usb_builder.product("LED-Controller").build();
-	//usb.set_interrupt(interrupt); //set the interupt() as interrupt handler
+	usb.set_interrupt(interrupt); //set the interupt() as interrupt handler
 	unsafe {
 		USB = Some(usb);
 		// set USB firt to Some first,
 		// otherwise a interrup called in the next cycle will not be able to unwrap USB.
-		//USB.as_mut().unwrap().enable_interrupt();
+		USB.as_mut().unwrap().enable_interrupt();
 	};
 
 	delay.delay_ms(100u8); //neopixel needs some delay at the start
@@ -51,6 +51,7 @@ fn interrupt() {
 	let usb = unsafe { USB.as_mut().unwrap() };
 	let mut buf = [0u8; 64];
 	let count = usb.read(&mut buf).ok();
+	return;
 	if let Some(count) = count {
 		let char = buf[count - 1] as char; //get the lasted sended element
 		let color = match char {

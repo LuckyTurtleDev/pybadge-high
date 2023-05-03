@@ -152,10 +152,15 @@ impl UsbBuilder {
 }
 
 fn handle_interrupt() {
-	//should I prefer panic instead? So the user get a respons
-	if let Some(handler) = unsafe { INTERRUPT_HANDLER } {
-		handler();
-	};
+	// Disable interrupts while accessing USB_SERIAL and USB_BUS to prevent possible
+	// race conditions
+	cortex_m::interrupt::free(|_cs| {
+		Usb {}.poll(); //unsave see poll function
+			   //should I prefer panic instead? So the user get a respons
+		if let Some(handler) = unsafe { INTERRUPT_HANDLER } {
+			handler();
+		}
+	})
 }
 
 #[interrupt]
