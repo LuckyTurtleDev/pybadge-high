@@ -302,16 +302,18 @@ impl PyBadge {
 
 		//usb
 		#[cfg(feature = "usb")]
-		let usb_builder = UsbBuilder {
-			usb_vid: 0x16c0,
-			usb_pid: 0x27dd,
-			manufacturer: "Fake company",
-			product: "Serial port",
-			serial_number: "Test",
-			pins: pins.usb,
-			peripherals: peripherals.USB,
-			clocks,
-			mclk: peripherals.MCLK
+		let usb_builder = {
+			UsbBuilder {
+				usb_vid: 0x16c0,
+				usb_pid: 0x27dd,
+				manufacturer: "Fake company",
+				product: "Serial port",
+				serial_number: "Test",
+				pins: pins.usb,
+				peripherals: peripherals.USB,
+				clocks,
+				mclk: peripherals.MCLK
+			}
 		};
 
 		Ok(PyBadge {
