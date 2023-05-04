@@ -3,6 +3,12 @@ name = "pybadge-high"
 workspace = ".."
 version = "0.1.0"
 edition = "2021"
+repository ="https://github.com/LuckyTurtleDev/more-wallpapers"
+keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
+categories = ["embedded", "hardware-support", "no-std"]
+include = ["/src/**/*.rs", "/build.rs", "/LICENSE*", "/README.md"]
+license = "MIT OR Apache-2.0"
+description= "High Level Board Support crate for the Adafruit pybadge"
 
 [features]
 default = ["neopixel", "usb", "pwm_sound", "time"]
