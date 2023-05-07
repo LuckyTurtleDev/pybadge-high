@@ -45,10 +45,10 @@ jobs:
   doc2readme:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/msrd0/cargo-doc2readme
+      image: ghcr.io/msrd0/cargo-doc2readme:nightly
     steps:
     - uses: actions/checkout@v3
-    - run: cargo doc2readme --check -p pybadge-high
+    - run: cargo +nightly doc2readme --expand-macros --all-features --check -p pybadge-high
 
   cargo_publish:
     if: ${{ github.event_name == 'release' }}
