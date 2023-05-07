@@ -1,6 +1,7 @@
+use cortex_m::peripheral::NVIC;
 use edgebadge::{hal, pac, pins::USB as UsbPins};
 use hal::{clock::GenericClockController, usb::UsbBus};
-use pac::{MCLK, USB as UsbPeripherals};
+use pac::{interrupt, MCLK, USB as UsbPeripherals};
 pub use usb_device::UsbError;
 use usb_device::{bus::UsbBusAllocator, prelude::*};
 use usbd_serial::{SerialPort, USB_CLASS_CDC};
@@ -8,6 +9,7 @@ use usbd_serial::{SerialPort, USB_CLASS_CDC};
 static mut USB_ALLOCATOR: Option<UsbBusAllocator<UsbBus>> = None;
 static mut USB_DEV: Option<UsbDevice<UsbBus>> = None;
 static mut USB_SERIAL: Option<SerialPort<UsbBus>> = None;
+static mut INTERRUPT_HANDLER: Option<fn()> = None;
 
 /// USB connection for serial communication.
 #[non_exhaustive] // prevent the user from creating this struct manual, without calling init.
@@ -53,6 +55,30 @@ impl Usb {
 	}
 	//TODO: wrap more function from https://docs.rs/usbd-serial/0.1.1/usbd_serial/struct.SerialPort.html
 	//TODO: wrap more function from https://docs.rs/usb-device/0.2.9/usb_device/device/struct.UsbDevice.html
+
+	///use the given function as interrupt handler.
+	///
+	///Interupt must still be enable by calling [`enable_interrupt()`](Usb::enable_interrupt).
+	///It is guaranteed that the interupt is not called again, while it is still running.
+	pub fn set_interrupt(&mut self, handler: fn()) {
+		unsafe { INTERRUPT_HANDLER = Some(handler) }
+	}
+
+	/// [`poll()`](Usb::poll()) will be called automatically.
+	/// You can register an interrupt handler with [`set_interput()`](Usb::interput()).
+	pub fn enable_interrupt(&mut self) {
+		unsafe {
+			NVIC::unmask(interrupt::USB_OTHER);
+			NVIC::unmask(interrupt::USB_TRCPT0);
+			NVIC::unmask(interrupt::USB_TRCPT1);
+		}
+	}
+
+	pub fn disable_interrupt(&mut self) {
+		NVIC::mask(interrupt::USB_OTHER);
+		NVIC::mask(interrupt::USB_TRCPT0);
+		NVIC::mask(interrupt::USB_TRCPT1);
+	}
 }
 
 pub struct UsbBuilder {
@@ -127,4 +153,31 @@ impl UsbBuilder {
 		self.serial_number = serial_number;
 		self
 	}
+}
+
+fn handle_interrupt() {
+	// Disable interrupts while accessing USB_SERIAL and USB_BUS to prevent possible
+	// race conditions
+	cortex_m::interrupt::free(|_cs| {
+		Usb {}.poll(); //unsave see poll function
+			   //should I prefer panic instead? So the user get a respons
+		if let Some(handler) = unsafe { INTERRUPT_HANDLER } {
+			handler();
+		}
+	})
+}
+
+#[interrupt]
+fn USB_OTHER() {
+	handle_interrupt()
+}
+
+#[interrupt]
+fn USB_TRCPT0() {
+	handle_interrupt()
+}
+
+#[interrupt]
+fn USB_TRCPT1() {
+	handle_interrupt()
 }

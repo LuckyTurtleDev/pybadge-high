@@ -1,0 +1,10 @@
+[package]
+name = "usb-interrupt-neopixel"
+workspace = "../.."
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+pybadge-high = { version = "0.1.0", path = "../../pybadge-high" }
+smart-leds = "0.3.0"
