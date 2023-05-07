@@ -51,7 +51,6 @@ fn interrupt() {
 	let usb = unsafe { USB.as_mut().unwrap() };
 	let mut buf = [0u8; 64];
 	let count = usb.read(&mut buf).ok();
-	return;
 	if let Some(count) = count {
 		let char = buf[count - 1] as char; //get the lasted sended element
 		let color = match char {
