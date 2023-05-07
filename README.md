@@ -16,7 +16,7 @@ Goal of this crate is to provide **high level hardware abstraction** layer for t
 rustup target install thumbv7em-none-eabihf
 ```
 
- - optional: install nightly toolchain for better doc.
+ - optional: install nightly toolchain for better doc (only relevant if you build the doc by yourself).
 
 
 ```rust
@@ -53,11 +53,6 @@ rustflags = [
 
   "-C", "link-arg=-Tlink.x",
 ]
-
-[profile.release]
-codegen-units = 1 # better optimizations
-debug = true # symbols are nice and they don't increase the size on Flash
-lto = true # better optimizations
 ```
 
  - Add this crate as dependency
@@ -67,7 +62,19 @@ lto = true # better optimizations
 cargo add pybadge-high
 ```
 
- - Addjust your `main.rs` You need to do some changes at your `main.rs`. First you must disable the rust standart libary by adding `#![no_std]`, because it does not supported the pybadge. This does also mean you can not use the default main function and must disable it with `#![no_main]`. But because we still need a main function we need to define our own with `#[entry]`. This main function does never return (`!`). Otherwise the pybadge would do random stuff after the program has finish. So we need a endless loop. To get access to the peripherals of the pybadge, like display, buttons, leds etc you call [`PyBadge::take()`][__link5]; This function can only called once at runtime otherwise it will return an Error.
+ - optional: add this to your `cargo.toml` for better optimizations
+
+
+```toml
+[profile.release]
+codegen-units = 1 # better optimizations
+debug = true # symbols are nice and they don't increase the size on Flash
+lto = true # better optimizations
+```
+
+ - Addjust your `main.rs`
+
+You need to do some changes at your `main.rs`. First you must disable the rust standart libary by adding `#![no_std]`, because it is not supported by the pybadge. This does also mean you can not use the default main function any more and must disable it with `#![no_main]`. But because we still need a main function to enter the code we need to define our own main with `#[entry]`. This main function does never return (`!`). Otherwise the pybadge would do random stuff after the program has finish. So we need a endless loop. To get access to the peripherals of the pybadge, like display, buttons, leds etc you call [`PyBadge::take()`][__link5]. This function can only called once at runtime otherwise it will return an Error.
 
 
 ```rust
@@ -82,6 +89,8 @@ fn main() -> ! {
 	loop {}
 }
 ```
+
+When a program does panic, the pybadge starts to peeping for 3 seconds and the red led at the back of the board starts flashing.
 
 
 ##### Flashing:
@@ -98,7 +107,7 @@ The display does not work until you have press the reset button of the pybadge a
 
 ## Feature-flags
 
-This crate has spilt functionallity in multiple feature flags. See the [rust book][__link6] for more information about features. Enabling only the feauters, which are needed, help to keep the binary size small and reduce the number of needed dependencies.
+This crate has spilt functionallity in multiple feature flags. See the [rust book][__link6] for more information about features. Enabling only the feauters, which are needed, helps to keep the binary size small and reduce the number of needed dependencies.
 
 The following features are aviable:
 

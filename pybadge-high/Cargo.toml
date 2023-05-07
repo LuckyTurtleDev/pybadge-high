@@ -37,3 +37,7 @@ document-features = "0.2.7"
 [build-dependencies]
 rustc_version = "0.4.0"
 
+
+[package.metadata.docs.rs]
+all-features = true
+default-target = "thumbv7em-none-eabihf"
