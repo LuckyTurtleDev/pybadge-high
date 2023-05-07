@@ -58,11 +58,14 @@ impl Usb {
 
 	///use the given function as interrupt handler.
 	///
-	///Interupt must still be enable by calling [`enable_interrupt()`](UsbError::enable_interrupt).
+	///Interupt must still be enable by calling [`enable_interrupt()`](Usb::enable_interrupt).
+	///It is guaranteed that the interupt is not called again, while it is still running.
 	pub fn set_interrupt(&mut self, handler: fn()) {
 		unsafe { INTERRUPT_HANDLER = Some(handler) }
 	}
 
+	/// [`poll()`](Usb::poll()) will be called automatically.
+	/// You can register an interrupt handler with [`set_interput()`](Usb::interput()).
 	pub fn enable_interrupt(&mut self) {
 		unsafe {
 			NVIC::unmask(interrupt::USB_OTHER);
@@ -70,6 +73,7 @@ impl Usb {
 			NVIC::unmask(interrupt::USB_TRCPT1);
 		}
 	}
+
 	pub fn disable_interrupt(&mut self) {
 		NVIC::mask(interrupt::USB_OTHER);
 		NVIC::mask(interrupt::USB_TRCPT0);
