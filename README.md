@@ -35,7 +35,7 @@ rustup toolchain install nightly --target thumbv7em-none-eabihf
 cargo new my-app
 ```
 
- - Add a `.carge/config.toml` with the following content, to define target architecture and flasher
+ - Add a `.cargo/config.toml` with the following content, to define target architecture and flasher
 
 
 ```toml
@@ -96,8 +96,29 @@ cargo run --release
 The display does not work until you have press the reset button of the pybadge after flashing.
 
 
+## Feature-flags
+
+This crate has spilt functionallity in multiple feature flags. See the [rust book][__link6] for more information about features. Enabling only the feauters, which are needed, help to keep the binary size small and reduce the number of needed dependencies.
+
+The following features are aviable:
+
+ - **`neopixel`** —  support for the Neopixel below the screen
+	
+	
+ - **`usb`** —  support for serial communication over usb
+	
+	
+ - **`pwm_sound`** —  support for single frequenc sound
+	
+	
+ - **`time`** *(enabled by default)* —  support for time measurement
+	
+	
+
+
  [__link0]: https://crates.io/crates/edgebadge
  [__link1]: https://docs.rs/atsamd-hal/latest/atsamd_hal/
  [__link2]: https://repology.org/project/rustup/versions
  [__link4]: https://crates.io/crates/hf2-cli
  [__link5]: `PyBadge::take()`
+ [__link6]: https://doc.rust-lang.org/cargo/reference/features.html

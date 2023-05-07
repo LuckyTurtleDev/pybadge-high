@@ -65,7 +65,7 @@ impl Usb {
 	}
 
 	/// [`poll()`](Usb::poll()) will be called automatically.
-	/// You can register an interrupt handler with [`set_interput()`](Usb::interput()).
+	/// You can register an interrupt handler with [`set_interrupt()`](Usb::set_interrupt()).
 	pub fn enable_interrupt(&mut self) {
 		unsafe {
 			NVIC::unmask(interrupt::USB_OTHER);

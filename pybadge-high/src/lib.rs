@@ -29,7 +29,7 @@
 //! ```bash
 //! cargo new my-app
 //! ```
-//! * Add a `.carge/config.toml` with the following content, to define target architecture and flasher
+//! * Add a `.cargo/config.toml` with the following content, to define target architecture and flasher
 //! ```toml
 //! [target.thumbv7em-none-eabihf]
 //! runner = "hf2 elf"
@@ -86,6 +86,15 @@
 //! cargo run --release
 //! ```
 //! The display does not work until you have press the reset button of the pybadge after flashing.
+//!
+//! # Feature-flags
+//! This crate has spilt functionallity in multiple feature flags.
+//! See the [rust book](https://doc.rust-lang.org/cargo/reference/features.html) for more information about features.
+//! Enabling only the feauters, which are needed, help to keep the binary size small
+//! and reduce the number of needed dependencies.
+//!
+//! The following features are aviable:
+#![doc = document_features::document_features!()]
 
 #[cfg(feature = "neopixel")]
 use edgebadge::gpio::v2::PA15;

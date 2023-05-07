@@ -11,10 +11,14 @@ license = "MIT OR Apache-2.0"
 description= "High Level Board Support crate for the Adafruit pybadge"
 
 [features]
-default = ["neopixel", "usb", "pwm_sound", "time"]
+default = ["time"]
+## support for the Neopixel below the screen
 neopixel = ["dep:ws2812-timer-delay", "dep:smart-leds-trait", "dep:embedded-hal"]
+## support for serial communication over usb
 usb = ["edgebadge/usb", "dep:usb-device"]
+## support for single frequenc sound
 pwm_sound = []
+## support for time measurement
 time = []
 
 [dependencies]
@@ -28,6 +32,8 @@ embedded-hal = { version = "0.2.7", default-features = false, optional = true }
 cortex-m-rt = { version = "0.7.3" }
 usb-device = { version = "0.2.9", optional = true }
 usbd-serial = "0.1.1"
+document-features = "0.2.7"
 
 [build-dependencies]
 rustc_version = "0.4.0"
+

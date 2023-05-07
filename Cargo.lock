@@ -149,6 +149,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6548a0ad5d2549e111e1f6a11a6c2e2d00ce6a3dafe22948d67c2b443f775e52"
 
 [[package]]
+name = "document-features"
+version = "0.2.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e493c573fce17f00dcab13b6ac057994f3ce17d1af4dc39bfd482b83c6eb6157"
+dependencies = [
+ "litrs",
+]
+
+[[package]]
 name = "edgebadge"
 version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -225,6 +234,12 @@ dependencies = [
  "spin",
  "stable_deref_trait",
 ]
+
+[[package]]
+name = "litrs"
+version = "0.2.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f9275e0933cf8bb20f008924c0cb07a0692fe54d8064996520bf998de9eb79aa"
 
 [[package]]
 name = "lock_api"
@@ -325,6 +340,7 @@ version = "0.1.0"
 dependencies = [
  "cortex-m",
  "cortex-m-rt",
+ "document-features",
  "edgebadge",
  "embedded-graphics",
  "embedded-hal",
