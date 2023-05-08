@@ -102,6 +102,7 @@
 //! The following features are aviable:
 #![doc = document_features::document_features!()]
 
+pub use cortex_m;
 #[cfg(feature = "neopixel")]
 use edgebadge::gpio::v2::PA15;
 use edgebadge::{
@@ -153,7 +154,7 @@ pub use flash::Flash;
 #[cfg(feature = "pwm_sound")]
 mod sound;
 #[cfg(feature = "pwm_sound")]
-use sound::PwmSound;
+pub use sound::PwmSound;
 
 ///Display Color type
 pub type Color = embedded_graphics::pixelcolor::Rgb565;
