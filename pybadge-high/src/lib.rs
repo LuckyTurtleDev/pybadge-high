@@ -446,7 +446,7 @@ fn panic(panic_info: &core::panic::PanicInfo) -> ! {
 	loop {
 		led.toggle();
 		//stop sound after 3 seconds (it is annoying)
-		if i <= 8 && cfg!(feature = "beep_panic"){
+		if i <= 8 && cfg!(feature = "beep_panic") {
 			speaker_enable.toggle();
 			i += 1
 		} else {
