@@ -90,7 +90,7 @@ fn main() -> ! {
 }
 ```
 
-When a program does panic, the red led at the back of the board starts flashing. If the `bluescreen`(default) feature is enable, the display does show the postion of the error. When the `beep_panic` feature is enable, the pybadge also beep for 3 seconds
+When a program does panic, the red led at the back of the board starts flashing. If the `bluescreen`(default) feature is enable, the display does show the postion of the error. When the `beep_panic` feature is enable, the pybadge also beep for 3 seconds.
 
 
 ##### Flashing:
