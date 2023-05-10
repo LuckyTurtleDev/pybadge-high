@@ -82,9 +82,9 @@
 //! 	loop {}
 //! }
 //! ```
-//! When a program does panic, the pybadge starts to peeping for 3 seconds
-//! and the red led at the back of the board starts flashing.
-//! If the bluescreen feature is enabled, the display does show the postion of the error.
+//! When a program does panic, the red led at the back of the board starts flashing.
+//! If the `bluescreen`(default) feature is enable, the display does show the postion of the error.
+//! When the `beep_panic` feature is enable, the pybadge also beep for 3 seconds.
 //!
 //! #### Flashing:
 //! To flash you program, put your device in bootloader mode by hitting the reset button twice.
@@ -446,7 +446,7 @@ fn panic(panic_info: &core::panic::PanicInfo) -> ! {
 	loop {
 		led.toggle();
 		//stop sound after 3 seconds (it is annoying)
-		if i <= 8 {
+		if i <= 8 && cfg!(feature = "beep_panic"){
 			speaker_enable.toggle();
 			i += 1
 		} else {

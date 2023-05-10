@@ -90,7 +90,7 @@ fn main() -> ! {
 }
 ```
 
-When a program does panic, the pybadge starts to peeping for 3 seconds and the red led at the back of the board starts flashing. If the bluescreen feature is enabled, the display does show the postion of the error.
+When a program does panic, the red led at the back of the board starts flashing. If the `bluescreen`(default) feature is enable, the display does show the postion of the error. When the `beep_panic` feature is enable, the pybadge also beep for 3 seconds
 
 
 ##### Flashing:
@@ -111,6 +111,9 @@ This crate has spilt functionallity in multiple feature flags. See the [rust boo
 
 The following features are aviable:
 
+ - **`beep_panic`** —  beep for 3 seconds, when rust pancics
+	
+	
  - **`bluescreen`** *(enabled by default)* —  show a bluescreen with error postion, when rust pancics
 	
 	

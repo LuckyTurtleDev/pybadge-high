@@ -12,6 +12,8 @@ description= "High Level Board Support crate for the Adafruit pybadge"
 
 [features]
 default = ["bluescreen", "time"]
+## beep for 3 seconds, when rust pancics
+beep_panic = []
 ## show a bluescreen with error postion, when rust pancics
 bluescreen = ["dep:heapless"]
 ## support for the Neopixel below the screen
