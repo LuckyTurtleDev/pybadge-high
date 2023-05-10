@@ -111,7 +111,7 @@ This crate has spilt functionallity in multiple feature flags. See the [rust boo
 
 The following features are aviable:
 
- - **`bluescreen`** *(enabled by default)* —  show a bluescreen with error postion, when rust pancic
+ - **`bluescreen`** *(enabled by default)* —  show a bluescreen with error postion, when rust pancics
 	
 	
  - **`neopixel`** —  support for the Neopixel below the screen
