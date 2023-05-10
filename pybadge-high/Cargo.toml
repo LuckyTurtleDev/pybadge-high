@@ -1,7 +1,7 @@
 [package]
 name = "pybadge-high"
 workspace = ".."
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 repository ="https://github.com/LuckyTurtleDev/more-wallpapers"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
