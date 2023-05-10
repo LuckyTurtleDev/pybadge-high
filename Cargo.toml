@@ -1,5 +1,15 @@
 [workspace]
-members = ["pybadge-high", "examples/flashing-display/", "examples/buttons/", "examples/blinking-led", "examples/neopixel", "examples/pwm-sound", "examples/usb-poll", "examples/time", "examples/usb-interrupt-neopixel"]
+members = [
+  "pybadge-high",
+  "examples/flashing-display/",
+  "examples/buttons/",
+  "examples/blinking-led",
+  "examples/neopixel",
+  "examples/pwm-sound",
+  "examples/usb-poll",
+  "examples/time",
+  "examples/usb-interrupt-neopixel",
+  "examples/bluescreen"]
 
 [profile.release]
 codegen-units = 1 # better optimizations

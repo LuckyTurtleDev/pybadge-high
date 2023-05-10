@@ -84,6 +84,7 @@
 //! ```
 //! When a program does panic, the pybadge starts to peeping for 3 seconds
 //! and the red led at the back of the board starts flashing.
+//! If the bluescreen feature is enabled, the display does show the postion of the error.
 //!
 //! #### Flashing:
 //! To flash you program, put your device in bootloader mode by hitting the reset button twice.
@@ -102,6 +103,8 @@
 //! The following features are aviable:
 #![doc = document_features::document_features!()]
 
+#[cfg(feature = "bluescreen")]
+use core::fmt::Write;
 pub use cortex_m;
 #[cfg(feature = "neopixel")]
 use edgebadge::gpio::v2::PA15;
@@ -111,6 +114,12 @@ use edgebadge::{
 	hal, pac,
 	prelude::*,
 	Pins
+};
+#[cfg(feature = "bluescreen")]
+use embedded_graphics::{
+	mono_font::{ascii::FONT_6X10, MonoTextStyle},
+	prelude::*,
+	text::Text
 };
 #[cfg(feature = "neopixel")]
 use embedded_hal::digital::v1_compat::OldOutputPin;
@@ -361,11 +370,12 @@ impl PyBadge {
 
 #[inline(never)]
 #[panic_handler]
-fn panic(_info: &core::panic::PanicInfo) -> ! {
+#[allow(unused_variables)] //panic_info is unused if bluescreen feature is disable
+fn panic(panic_info: &core::panic::PanicInfo) -> ! {
 	//simple turn red led on
 	let mut peripherals = unsafe { crate::pac::Peripherals::steal() };
-	let mut pins = Pins::new(peripherals.PORT);
-	let mut led = pins.d13.into_push_pull_output(&mut pins.port);
+	let mut pins = Pins::new(peripherals.PORT).split();
+	let mut led = pins.led_pin.into_push_pull_output(&mut pins.port);
 	led.set_high().ok();
 
 	//enable blinking for led
@@ -377,9 +387,61 @@ fn panic(_info: &core::panic::PanicInfo) -> ! {
 		&mut peripherals.OSCCTRL,
 		&mut peripherals.NVMCTRL
 	);
+
 	let mut delay = hal::delay::Delay::new(core.SYST, &mut clocks);
-	let mut speaker = pins.speaker.into_push_pull_output(&mut pins.port);
-	let mut speaker_enable = pins.speaker_enable.into_push_pull_output(&mut pins.port);
+	let mut speaker_enable = pins.speaker.enable.into_push_pull_output(&mut pins.port);
+	let mut speaker = pins.speaker.speaker.into_push_pull_output(&mut pins.port);
+
+	#[cfg(feature = "bluescreen")]
+	{
+		let dislpay = pins
+			.display
+			.init(
+				&mut clocks,
+				peripherals.SERCOM4,
+				&mut peripherals.MCLK,
+				peripherals.TC2,
+				&mut delay,
+				&mut pins.port
+			)
+			.ok()
+			.map(|(display, _backlight)| display);
+		if let Some(mut display) = dislpay {
+			display.clear(Color::BLUE).unwrap();
+			let mut output = heapless::String::<1024>::new();
+			writeln!(output, "program panicked at\n").ok();
+			if let Some(location) = panic_info.location() {
+				writeln!(
+					output,
+					"{}:{}:{}",
+					location.file(),
+					location.line(),
+					location.column()
+				)
+				.ok();
+			}
+			//insert newline every x char (no auto line wrap)
+			let old_output = output;
+			let mut output = heapless::String::<1024>::new();
+			let mut i: usize = 0;
+			for char in old_output.chars() {
+				i += 1;
+				if char == '\n' {
+					i = 0;
+				}
+				if i >= 26 {
+					i = 0;
+					writeln!(output).ok();
+				}
+				write!(output, "{char}").ok();
+			}
+			let style = MonoTextStyle::new(&FONT_6X10, Color::WHITE);
+			Text::new(&output, Point::new(5, 20), style)
+				.draw(&mut display)
+				.ok();
+		}
+	}
+
 	let mut i = 0_u8;
 	loop {
 		led.toggle();

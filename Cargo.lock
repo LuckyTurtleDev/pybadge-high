@@ -90,6 +90,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "bluescreen-example"
+version = "0.1.0"
+dependencies = [
+ "pybadge-high",
+]
+
+[[package]]
 name = "buttons-example"
 version = "0.1.0"
 dependencies = [
@@ -344,6 +351,7 @@ dependencies = [
  "edgebadge",
  "embedded-graphics",
  "embedded-hal",
+ "heapless",
  "rustc_version 0.4.0",
  "smart-leds-trait",
  "st7735-lcd",

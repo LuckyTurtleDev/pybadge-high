@@ -11,7 +11,9 @@ license = "MIT OR Apache-2.0"
 description= "High Level Board Support crate for the Adafruit pybadge"
 
 [features]
-default = ["time"]
+default = ["bluescreen", "time"]
+## show a bluescreen with error postion, when rust pancics
+bluescreen = ["dep:heapless"]
 ## support for the Neopixel below the screen
 neopixel = ["dep:ws2812-timer-delay", "dep:smart-leds-trait", "dep:embedded-hal"]
 ## support for serial communication over usb
@@ -33,6 +35,7 @@ cortex-m-rt = { version = "0.7.3" }
 usb-device = { version = "0.2.9", optional = true }
 usbd-serial = "0.1.1"
 document-features = "0.2.7"
+heapless = { version = "0.7.16", optional = true }
 
 [build-dependencies]
 rustc_version = "0.4.0"
