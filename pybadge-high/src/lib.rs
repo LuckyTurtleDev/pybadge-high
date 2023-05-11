@@ -130,7 +130,9 @@ use embedded_hal::digital::v1_compat::OldOutputPin;
 #[cfg(feature = "neopixel")]
 use hal::timer::SpinTimer;
 use hal::{clock::GenericClockController, pwm::Pwm2, sercom::SPIMaster4};
-use pac::{interrupt, CorePeripherals, Peripherals};
+#[cfg(any(feature = "usb", feature = "time"))]
+use pac::interrupt;
+use pac::{CorePeripherals, Peripherals};
 #[cfg(feature = "neopixel")]
 use smart_leds_trait::SmartLedsWrite;
 use st7735_lcd::ST7735;
@@ -200,7 +202,7 @@ core::compile_error!(
 build_alert::yellow! {"
 WARNING:
 	bluescreen-message-nightly feature is enabled, but nigthly toolchain is not used!
-	This feature has no effect if stable feature is used
+	This feature has no effect if stable toolchain is used
 "}
 
 ///The red led at the back of the board.
@@ -245,6 +247,7 @@ impl PyBadge {
 	/// otherwise it does return Err.
 	pub fn take() -> Result<PyBadge, ()> {
 		let mut peripherals = Peripherals::take().ok_or(())?;
+		#[allow(unused_mut)] //only some feature flags need mut
 		let mut core = CorePeripherals::take().ok_or(())?;
 		let mut clocks = GenericClockController::with_internal_32kosc(
 			peripherals.GCLK,
