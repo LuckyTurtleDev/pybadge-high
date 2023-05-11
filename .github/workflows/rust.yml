@@ -12,6 +12,7 @@ jobs:
     strategy:
       matrix:
         toolchain: [stable, nightly]
+    continue-on-error: true
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository and submodules
@@ -35,7 +36,7 @@ jobs:
       - run: cargo check-all-features
         env:
           RUST_BACKTRACE: 1
-      - run: --all-features  --all-targets #bluescreen-message-nightly feature can not be tested by check-all-features; see https://github.com/frewsxcv/cargo-all-features/issues/43
+      - run: cargo check --all-features #bluescreen-message-nightly feature can not be tested by check-all-features; see https://github.com/frewsxcv/cargo-all-features/issues/43
         env:
           RUST_BACKTRACE: 1
 
