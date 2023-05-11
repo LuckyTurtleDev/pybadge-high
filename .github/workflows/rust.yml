@@ -9,10 +9,10 @@ on:
 jobs:
 
   test:
-    runs-on: ubuntu-latest
     strategy:
       matrix:
         toolchain: [stable, nightly]
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository and submodules
         uses: actions/checkout@v3
