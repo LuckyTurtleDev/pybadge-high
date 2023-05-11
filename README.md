@@ -117,6 +117,11 @@ The following features are aviable:
  - **`bluescreen`** *(enabled by default)* —  show a bluescreen with error postion, when rust pancics
 	
 	
+ - **`bluescreen-message-nightly`** —  show also error message at bluescreen, when rust panics.
+	
+	This features depends on rust nightly features and needs the nightly toolchain. It has no effect, when compiled with stable. Because it use nightly features it might break in future rust versions.
+	
+	
  - **`neopixel`** —  support for the Neopixel below the screen
 	
 	
