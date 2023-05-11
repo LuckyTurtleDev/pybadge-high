@@ -16,10 +16,11 @@ jobs:
     steps:
       - name: Checkout repository and submodules
         uses: actions/checkout@v3
-      - uses: dtolnay/rust-toolchain@${{ matrix.toolchain }}
+      - uses: dtolnay/rust-toolchain@master
         id: "rust-toolchain"
         with:
           targets: thumbv7em-none-eabihf
+          toolchain: ${{ matrix.toolchain }}
       - name: install cargo-all-features
         uses: baptiste0928/cargo-install@v2.0.0
         with:
