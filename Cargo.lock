@@ -353,7 +353,7 @@ dependencies = [
 
 [[package]]
 name = "pybadge-high"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "build-alert",
  "cortex-m",
