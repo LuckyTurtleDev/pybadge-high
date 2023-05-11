@@ -9,11 +9,14 @@ on:
 jobs:
 
   test:
-    runs-on: ubuntu-latest    
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        toolchain: [stable, nightly]
     steps:
       - name: Checkout repository and submodules
         uses: actions/checkout@v3
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@${{ matrix.toolchain }}
         id: "rust-toolchain"
         with:
           targets: thumbv7em-none-eabihf
@@ -29,6 +32,9 @@ jobs:
             target
           key: "${{runner.os}} Rust ${{steps.rust-toolchain.outputs.cachekey}} Lock ${{hashFiles('Cargo.lock')}}"
       - run: cargo check-all-features
+        env:
+          RUST_BACKTRACE: 1
+      - run: --all-features  --all-targets #bluescreen-message-nightly feature can not be tested by check-all-features; see https://github.com/frewsxcv/cargo-all-features/issues/43
         env:
           RUST_BACKTRACE: 1
 
