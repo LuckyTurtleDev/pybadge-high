@@ -3,6 +3,10 @@
 #![warn(unreachable_pub)]
 #![cfg_attr(all(doc, nightly), feature(doc_auto_cfg))]
 #![allow(deprecated)]
+#![cfg_attr(
+	all(feature = "bluescreen-message-nightly", nightly),
+	feature(panic_info_message)
+)]
 
 //! Goal of this crate is to provide **high level hardware abstraction** layer for the pybade and the edgebadge.
 //! It should allow people with no/less knowledge of rust and embedded hardware, to program the boards mention before.
@@ -187,6 +191,17 @@ pub type NeoPixel = Ws2812<
 #[cfg(feature = "neopixel")]
 ///Color type of the NeoPixel leds.
 pub type NeoPixelColor = <NeoPixel as SmartLedsWrite>::Color;
+
+#[cfg(all(feature = "bluescreen-message-nightly", not(feature = "bluescreen")))]
+core::compile_error!(
+	"bluescreen-message-nightly feature is enbaled but bluescreen feature is disable"
+);
+#[cfg(all(feature = "bluescreen-message-nightly", not(nightly)))]
+build_alert::yellow! {"
+WARNING:
+	bluescreen-message-nightly feature is enabled, but nigthly toolchain is not used!
+	This feature has no effect if stable feature is used
+"}
 
 ///The red led at the back of the board.
 pub struct Led {
@@ -419,6 +434,10 @@ fn panic(panic_info: &core::panic::PanicInfo) -> ! {
 					location.column()
 				)
 				.ok();
+			}
+			#[cfg(all(feature = "bluescreen-message-nightly", nightly))]
+			if let Some(message) = panic_info.message() {
+				writeln!(output, "{message}").ok();
 			}
 			//insert newline every x char (no auto line wrap)
 			let old_output = output;

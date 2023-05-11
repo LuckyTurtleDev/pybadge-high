@@ -16,6 +16,12 @@ default = ["bluescreen", "time"]
 beep_panic = []
 ## show a bluescreen with error postion, when rust pancics
 bluescreen = ["dep:heapless"]
+## show also error message at bluescreen, when rust panics.
+##
+## This features depends on rust nightly features and needs the nightly toolchain.
+## It has no effect, when compiled with stable.
+## Because it use nightly features it might break in future rust versions.
+bluescreen-message-nightly = []
 ## support for the Neopixel below the screen
 neopixel = ["dep:ws2812-timer-delay", "dep:smart-leds-trait", "dep:embedded-hal"]
 ## support for serial communication over usb
@@ -38,6 +44,7 @@ usb-device = { version = "0.2.9", optional = true }
 usbd-serial = "0.1.1"
 document-features = "0.2.7"
 heapless = { version = "0.7.16", optional = true }
+build-alert = "0.1.1"
 
 [build-dependencies]
 rustc_version = "0.4.0"
@@ -46,3 +53,6 @@ rustc_version = "0.4.0"
 [package.metadata.docs.rs]
 all-features = true
 default-target = "thumbv7em-none-eabihf"
+
+[package.metadata.cargo-all-features]
+denylist = ["bluescreen-message-nightly"]
