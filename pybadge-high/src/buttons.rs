@@ -45,6 +45,7 @@ impl<'a> Iterator for EventIter<'a> {
 			let mask = 1 << i;
 			//check if state was changed
 			if mask & self.update_postions != 0 {
+				self.postion = i;
 				//mask is always an valid Button value
 				let button = Button::try_from(mask).unwrap();
 				if self.buttons.button_pressed(button) {
@@ -89,7 +90,7 @@ impl Buttons {
 	pub fn button_pressed(&self, button: Button) -> bool {
 		self.current_state & button as u8 != 0
 	}
-	
+
 	pub fn a_pressed(&self) -> bool {
 		self.button_pressed(Button::A)
 	}
