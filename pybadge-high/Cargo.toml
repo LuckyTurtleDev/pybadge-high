@@ -45,6 +45,7 @@ usbd-serial = "0.1.1"
 document-features = "0.2.7"
 heapless = { version = "0.7.16", optional = true }
 build-alert = "0.1.1"
+num_enum = { version = "0.6.1", default-features = false }
 
 [build-dependencies]
 rustc_version = "0.4.0"
