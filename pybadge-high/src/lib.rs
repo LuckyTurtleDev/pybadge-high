@@ -286,7 +286,7 @@ impl PyBadge {
 			let clock = pins.buttons.clock.into_push_pull_output(&mut pins.port);
 			Buttons {
 				current_state: 0,
-				laste_state: 0,
+				last_state: 0,
 				latch,
 				data_in,
 				clock

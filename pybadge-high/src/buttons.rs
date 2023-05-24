@@ -45,7 +45,7 @@ impl<'a> Iterator for EventIter<'a> {
 			let mask = 1 << i;
 			//check if state was changed
 			if mask & self.update_postions != 0 {
-				self.postion = i;
+				self.postion = i + 1;
 				//mask is always an valid Button value
 				let button = Button::try_from(mask).unwrap();
 				if self.buttons.button_pressed(button) {
