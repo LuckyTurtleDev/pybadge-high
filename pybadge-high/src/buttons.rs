@@ -67,7 +67,7 @@ impl<'a> Iterator for EventIter<'a> {
 /// and can not be acess directly.
 pub struct Buttons {
 	pub(crate) current_state: u8,
-	pub(crate) laste_state: u8,
+	pub(crate) last_state: u8,
 	pub(crate) latch: Pb0<Output<PushPull>>,
 	/// Button Out
 	pub(crate) data_in: Pb30<Input<Floating>>,
@@ -132,7 +132,7 @@ impl Buttons {
 		EventIter {
 			postion: 0,
 			buttons: self,
-			update_postions: self.current_state ^ self.laste_state
+			update_postions: self.current_state ^ self.last_state
 		}
 	}
 
@@ -172,7 +172,7 @@ impl Buttons {
 			self.clock.set_high().ok();
 		}
 
-		self.laste_state = self.current_state;
+		self.last_state = self.current_state;
 		self.current_state = current;
 	}
 }
