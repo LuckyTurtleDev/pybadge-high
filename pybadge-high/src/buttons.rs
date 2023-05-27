@@ -6,21 +6,68 @@ use hal::{
 	gpio::{self, *},
 	prelude::*
 };
+use num_enum::TryFromPrimitive;
 
-const B: u8 = 1 << 7;
-const A: u8 = 1 << 6;
-const START: u8 = 1 << 5;
-const SELECT: u8 = 1 << 4;
-const RIGHT: u8 = 1 << 3;
-const DOWN: u8 = 1 << 2;
-const UP: u8 = 1 << 1;
-const LEFT: u8 = 1;
+#[repr(u8)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, TryFromPrimitive)]
+/// There are 8 buttons on the front: A, B, Select, Start and four arranged in a d-pad.
+///
+/// ![🖼️](https://cdn-learn.adafruit.com/assets/assets/000/075/106/original/adafruit_products_PyBadge_Top_Buttons.jpg)
+pub enum Button {
+	B = 1 << 7,
+	A = 1 << 6,
+	Start = 1 << 5,
+	Sesect = 1 << 4,
+	Right = 1 << 3,
+	Down = 1 << 2,
+	Up = 1 << 1,
+	Left = 1
+}
+
+/// Button status changes.
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum Event {
+	Pressed(Button),
+	Released(Button)
+}
+
+pub struct EventIter<'a> {
+	postion: u8,
+	buttons: &'a Buttons,
+	update_postions: u8
+}
+
+impl<'a> Iterator for EventIter<'a> {
+	type Item = Event;
+	fn next(&mut self) -> Option<Self::Item> {
+		for i in self.postion..8 {
+			let mask = 1 << i;
+			//check if state was changed
+			if mask & self.update_postions != 0 {
+				self.postion = i + 1;
+				//mask is always an valid Button value
+				let button = Button::try_from(mask).unwrap();
+				if self.buttons.button_pressed(button) {
+					return Some(Event::Pressed(button));
+				} else {
+					return Some(Event::Released(button));
+				}
+			}
+		}
+		None
+	}
+}
 
 /// Store the state of the Buttons.
-/// Must be manual updated by calling [`.update()`](Self::update).
+///
+/// The [`Button`]s do not connect to GPIO pins directly.
+/// Instead they connect to an 8-channel shift register to save pins.
+/// This result thate they must be manual updated by calling [`.update()`](Self::update)
+/// and can not be acess directly.
 pub struct Buttons {
 	pub(crate) current_state: u8,
-	pub(crate) laste_state: u8,
+	pub(crate) last_state: u8,
 	pub(crate) latch: Pb0<Output<PushPull>>,
 	/// Button Out
 	pub(crate) data_in: Pb30<Input<Floating>>,
@@ -39,36 +86,54 @@ impl Buttons {
 		self.current_state == 0
 	}
 
+	/// Check if a button is pressed
+	pub fn button_pressed(&self, button: Button) -> bool {
+		self.current_state & button as u8 != 0
+	}
+
 	pub fn a_pressed(&self) -> bool {
-		self.current_state & A != 0
+		self.button_pressed(Button::A)
 	}
 
 	pub fn b_pressed(&self) -> bool {
-		self.current_state & B != 0
+		self.button_pressed(Button::B)
 	}
 
 	pub fn start_pressed(&self) -> bool {
-		self.current_state & START != 0
+		self.button_pressed(Button::Start)
 	}
 
 	pub fn select_pressed(&self) -> bool {
-		self.current_state & SELECT != 0
+		self.button_pressed(Button::Sesect)
 	}
 
 	pub fn right_pressed(&self) -> bool {
-		self.current_state & RIGHT != 0
+		self.button_pressed(Button::Right)
 	}
 
 	pub fn down_pressed(&self) -> bool {
-		self.current_state & DOWN != 0
+		self.button_pressed(Button::Down)
 	}
 
 	pub fn up_pressed(&self) -> bool {
-		self.current_state & UP != 0
+		self.button_pressed(Button::Up)
 	}
 
 	pub fn left_pressed(&self) -> bool {
-		self.current_state & LEFT != 0
+		self.button_pressed(Button::Left)
+	}
+
+	/// Iterator over alle [`Event`]s (Button status changes) occured between the last and penultimate update.
+	///
+	/// This does only include the changes of Buttons!
+	/// For example if a button was pressed at the penultimate update und is still pressed at the last update,
+	/// the iterator does skip the button.
+	pub fn events(&self) -> EventIter {
+		EventIter {
+			postion: 0,
+			buttons: self,
+			update_postions: self.current_state ^ self.last_state
+		}
 	}
 
 	//Returns a ButtonIter of button changes as Keys enums
@@ -107,7 +172,7 @@ impl Buttons {
 			self.clock.set_high().ok();
 		}
 
-		self.laste_state = self.current_state;
+		self.last_state = self.current_state;
 		self.current_state = current;
 	}
 }

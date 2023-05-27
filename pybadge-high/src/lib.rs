@@ -143,8 +143,9 @@ use ws2812_timer_delay as ws2812;
 
 pub mod time;
 
-mod buttons;
-pub use buttons::Buttons;
+/// There are 8 buttons on the front: A, B, Select, Start and four arranged in a d-pad.
+pub mod buttons;
+use buttons::Buttons;
 
 pub mod prelude {
 	pub use cortex_m_rt::entry;
@@ -171,9 +172,13 @@ mod sound;
 #[cfg(feature = "pwm_sound")]
 pub use sound::PwmSound;
 
-///Display Color type
+/// The [`Rgb565`](embedded_graphics::pixelcolor::Rgb565) Color type used by the display
 pub type Color = embedded_graphics::pixelcolor::Rgb565;
+/// Backlight of the display
 pub type Backlight = Pwm2<gpio::v2::PA01>;
+/// 1.8" TFT display - The front features a 160x128 pixel [`Rgb565`](embedded_graphics::pixelcolor::Rgb565) color display.
+///
+/// ![🖼️](https://cdn-learn.adafruit.com/assets/assets/000/075/105/original/adafruit_products_PyBadge_Top_Display.jpg)
 pub type Display = ST7735<
 	SPIMaster4<
 		hal::sercom::Sercom4Pad2<Pb14<PfC>>,
@@ -185,7 +190,11 @@ pub type Display = ST7735<
 >;
 pub type Delay = edgebadge::delay::Delay;
 #[cfg(feature = "neopixel")]
-///The RGB NeoPixel leds below the display.
+/// 5 individually addressable RGB NeoPixel LEDs
+/// located on the front of the board along the bottom middle.
+///
+/// If you have a PyBadgeLC there is only 1 NeoPixel in the center.
+/// ![🖼️](https://cdn-learn.adafruit.com/assets/assets/000/075/104/original/adafruit_products_PyBadge_Top_NeoPixels_and_Light_Sensor.jpg)
 pub type NeoPixel = Ws2812<
 	SpinTimer,
 	OldOutputPin<edgebadge::gpio::Pin<PA15, gpio::v2::Output<gpio::v2::PushPull>>>
@@ -277,7 +286,7 @@ impl PyBadge {
 			let clock = pins.buttons.clock.into_push_pull_output(&mut pins.port);
 			Buttons {
 				current_state: 0,
-				laste_state: 0,
+				last_state: 0,
 				latch,
 				data_in,
 				clock
