@@ -6,5 +6,5 @@ edition = "2021"
 publish = false
 
 [dependencies]
-pybadge-high = { version = "0.1.0", path = "../../pybadge-high",  features = ["neopixel", "usb"]  }
+pybadge-high = { path = "../../pybadge-high",  features = ["neopixel", "usb"]  }
 smart-leds = "0.3.0"
