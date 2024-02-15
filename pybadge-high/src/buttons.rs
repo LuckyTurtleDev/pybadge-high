@@ -17,7 +17,7 @@ pub enum Button {
 	B = 1 << 7,
 	A = 1 << 6,
 	Start = 1 << 5,
-	Sesect = 1 << 4,
+	Select = 1 << 4,
 	Right = 1 << 3,
 	Down = 1 << 2,
 	Up = 1 << 1,
@@ -27,7 +27,7 @@ pub enum Button {
 /// Button status changes.
 
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub enum Event {
+pub enum KeyEvent {
 	Pressed(Button),
 	Released(Button)
 }
@@ -39,7 +39,7 @@ pub struct EventIter<'a> {
 }
 
 impl<'a> Iterator for EventIter<'a> {
-	type Item = Event;
+	type Item = KeyEvent;
 	fn next(&mut self) -> Option<Self::Item> {
 		for i in self.postion..8 {
 			let mask = 1 << i;
@@ -49,9 +49,9 @@ impl<'a> Iterator for EventIter<'a> {
 				//mask is always an valid Button value
 				let button = Button::try_from(mask).unwrap();
 				if self.buttons.button_pressed(button) {
-					return Some(Event::Pressed(button));
+					return Some(KeyEvent::Pressed(button));
 				} else {
-					return Some(Event::Released(button));
+					return Some(KeyEvent::Released(button));
 				}
 			}
 		}
@@ -104,7 +104,7 @@ impl Buttons {
 	}
 
 	pub fn select_pressed(&self) -> bool {
-		self.button_pressed(Button::Sesect)
+		self.button_pressed(Button::Select)
 	}
 
 	pub fn right_pressed(&self) -> bool {
