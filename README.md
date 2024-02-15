@@ -1,4 +1,4 @@
-# pybadge-high ![License: MIT OR Apache-2.0](https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-blue) [![pybadge-high on crates.io](https://img.shields.io/crates/v/pybadge-high)](https://crates.io/crates/pybadge-high) [![pybadge-high on docs.rs](https://docs.rs/pybadge-high/badge.svg)](https://docs.rs/pybadge-high) [![Source Code Repository](https://img.shields.io/badge/Code-On%20GitHub-blue?logo=GitHub)](https://github.com/LuckyTurtleDev/pybadge-high) ![Rust Version: none](https://img.shields.io/badge/rustc--orange.svg)
+# pybadge-high ![License: MIT OR Apache-2.0](https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-blue) [![pybadge-high on crates.io](https://img.shields.io/crates/v/pybadge-high)](https://crates.io/crates/pybadge-high) [![pybadge-high on docs.rs](https://docs.rs/pybadge-high/badge.svg)](https://docs.rs/pybadge-high) [![Source Code Repository](https://img.shields.io/badge/Code-On%20GitHub-blue?logo=GitHub)](https://github.com/LuckyTurtleDev/pybadge-high)
 
 Goal of this crate is to provide **high level hardware abstraction** layer for the pybade and the edgebadge. It should allow people with no/less knowledge of rust and embedded hardware, to program the boards mention before. If you try to do anything hardware-near or usinig additonal expensions, you should probably use the more hardware-near the [edgebadge][__link0] or [atsamd_hal][__link1] crate instead.
 
@@ -134,6 +134,7 @@ The following features are aviable:
  - **`time`** *(enabled by default)* —  support for time measurement
 	
 	
+
 
 
  [__link0]: https://crates.io/crates/edgebadge
