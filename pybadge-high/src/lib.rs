@@ -195,7 +195,7 @@ pub type Delay = edgebadge::delay::Delay;
 ///
 /// If you have a PyBadgeLC there is only 1 NeoPixel in the center.
 ///
-/// ⚠️ The neopixel only works properly if `codegen-units` is set to 1 and `lto` is enable at the `config.toml`
+/// ⚠️ The neopixels only work properly if `codegen-units` is set to 1 and `lto` is enable at the `config.toml` and compiled in release mode.
 ///```toml
 /// [profile.release]
 /// codegen-units = 1 # better optimizations
