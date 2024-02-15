@@ -6,5 +6,5 @@ edition = "2021"
 publish = false
 
 [dependencies]
-embedded-graphics = "0.7.1"
+embedded-graphics = "0.8.1"
 pybadge-high = { path = "../../pybadge-high"}
