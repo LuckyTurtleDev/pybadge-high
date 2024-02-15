@@ -194,7 +194,15 @@ pub type Delay = edgebadge::delay::Delay;
 /// located on the front of the board along the bottom middle.
 ///
 /// If you have a PyBadgeLC there is only 1 NeoPixel in the center.
+///
+/// ⚠️ The neopixel only works properly if `codegen-units` is set to 1 and `lto` is enable at the `config.toml`
+///```toml
+///[profile.release]
+///codegen-units = 1 # better optimizations
+///lto = true # better optimizations
+///```
 /// ![🖼️](https://cdn-learn.adafruit.com/assets/assets/000/075/104/original/adafruit_products_PyBadge_Top_NeoPixels_and_Light_Sensor.jpg)
+///
 pub type NeoPixel = Ws2812<
 	SpinTimer,
 	OldOutputPin<edgebadge::gpio::Pin<PA15, gpio::v2::Output<gpio::v2::PushPull>>>
