@@ -177,7 +177,7 @@ dependencies = [
 [[package]]
 name = "edgebadge"
 version = "0.9.0"
-source = "git+https://github.com/LuckyTurtleDev/atsamd.git?branch=update-embedded-graphics#e4caeab283a988d54cc31a98fba1dee565eee499"
+source = "git+https://github.com/atsamd-rs/atsamd.git#b138702539afa9ec12f17aa5b2765f59289b83ce"
 dependencies = [
  "atsamd-hal",
  "cortex-m",
